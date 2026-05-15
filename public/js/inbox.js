@@ -1296,11 +1296,15 @@ function playNotificationSound(beepCount = 2, beepDuration = 0.18, gap = 0.18) {
 // ---------------------------
 socket.on("newMessage", msg => {
     // If the message belongs to the current conversation, append it
-    if (msg.conversation_id == currentConversationId) {
+    if (!msg || !msg.conversation_id) return;
+
+    const isCurrentConversation = String(msg.conversation_id) === String(currentConversationId);
+    if (isCurrentConversation) {
         appendMessage(msg);
+        clearConversationUnreadBadge(msg.conversation_id);
     }
 
-    // Add desktop notification only when message alerts are enabled
+    // desktop notification for any new message event
     if (localStorage.getItem('msgAlert') === 'true' && !document.hasFocus() && 'Notification' in window && Notification.permission === 'granted') {
         new Notification('LiveSupport - New Message', {
             body: `New message: ${msg.message}`,
@@ -1308,42 +1312,16 @@ socket.on("newMessage", msg => {
         });
     }
 
-    if (msg.conversation_id != currentConversationId && msg.sender !== 'sent') {
+    if (msg.sender !== 'sent' && !isCurrentConversation) {
         if (localStorage.getItem('soundAlert') === 'true') {
             playNotificationSound();
         }
         showNotification("New message received from a customer!");
-        const convDiv = conversationsList.querySelector(`[data-id='${msg.conversation_id}']`);
-        const previewText = msg.message.length > 50 ? msg.message.slice(0, 47) + '...' : msg.message;
-        if (convDiv) {
-            const cachedConv = conversationCache.find(c => String(c.id) === String(msg.conversation_id));
-            if (cachedConv) {
-                cachedConv.unread_count = (Number(cachedConv.unread_count) || 0) + 1;
-            }
-            const badge = convDiv.querySelector('.unread-badge');
-            if (badge) {
-                badge.textContent = (Number(badge.textContent) || 0) + 1;
-            } else {
-                const nameRow = convDiv.querySelector('.name-row');
-                if (nameRow) {
-                    const newBadge = document.createElement('div');
-                    newBadge.className = 'unread-badge';
-                    newBadge.textContent = '1';
-                    nameRow.appendChild(newBadge);
-                }
-            }
-            convDiv.classList.add("new-message");
-            const preview = convDiv.querySelector('.preview');
-            if (preview) preview.textContent = previewText;
-            // move updated conversation to top for faster visibility
-            conversationsList.prepend(convDiv);
-        } else {
-            // If unknown conversation, reload the list once
-            loadConversations();
-        }
     }
 
-    if (msg.conversation_id == currentConversationId && msg.sender !== 'sent') {
+    updateConversationEntry(msg, isCurrentConversation);
+
+    if (isCurrentConversation && msg.sender !== 'sent') {
         fetchAISuggestion(currentConversationId);
     }
 });
@@ -1352,6 +1330,67 @@ socket.on("handoffAlert", data => {
     // Do not play beep sequence for handoff alerts (rely on handoff audio only)
     showNotification("AI has handed off the chat to staff.");
 });
+
+function getActiveInboxFilter() {
+    const activeBtn = document.querySelector('.filter.active');
+    if (!activeBtn) return 'all';
+    return (activeBtn.dataset.filter || activeBtn.textContent || 'all').toString().trim().toLowerCase();
+}
+
+function findConversationElement(conversationId) {
+    if (!conversationsList) return null;
+    return conversationsList.querySelector(`[data-id='${conversationId}']`);
+}
+
+function clearConversationUnreadBadge(conversationId) {
+    const convDiv = findConversationElement(conversationId);
+    if (!convDiv) return;
+    const badge = convDiv.querySelector('.unread-badge');
+    if (badge) {
+        badge.textContent = '0';
+        badge.remove();
+    }
+}
+
+function updateConversationEntry(msg, isCurrentConversation) {
+    const previewText = msg.message ? (msg.message.length > 50 ? msg.message.slice(0, 47) + '...' : msg.message) : '';
+    const convDiv = findConversationElement(msg.conversation_id);
+    const unreadDiff = msg.sender !== 'sent' && !isCurrentConversation ? 1 : 0;
+
+    if (convDiv) {
+        const preview = convDiv.querySelector('.preview');
+        if (preview && previewText) preview.textContent = previewText;
+
+        const nameRow = convDiv.querySelector('.name-row');
+        if (nameRow) {
+            let badge = convDiv.querySelector('.unread-badge');
+            if (isCurrentConversation) {
+                if (badge) badge.remove();
+            } else if (unreadDiff > 0) {
+                if (!badge) {
+                    badge = document.createElement('div');
+                    badge.className = 'unread-badge';
+                    badge.textContent = '0';
+                    nameRow.appendChild(badge);
+                }
+                badge.textContent = String((Number(badge.textContent) || 0) + unreadDiff);
+            }
+        }
+
+        if (convDiv.parentNode) {
+            conversationsList.prepend(convDiv);
+        }
+    } else {
+        loadConversations(getActiveInboxFilter());
+    }
+
+    const cachedConv = conversationCache.find(c => String(c.id) === String(msg.conversation_id));
+    if (cachedConv) {
+        cachedConv.unread_count = String(isCurrentConversation || msg.sender === 'sent' ? 0 : (Number(cachedConv.unread_count) || 0) + unreadDiff);
+        if (previewText) cachedConv.last_message = previewText;
+    }
+}
+
 
 // ---------------------------
 // Initial load

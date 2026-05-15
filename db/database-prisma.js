@@ -51,6 +51,11 @@ const db = {
         }
 
         if (sqlUpper.startsWith('INSERT') || sqlUpper.startsWith('UPDATE') || sqlUpper.startsWith('DELETE')) {
+          if (/RETURNING\s+/i.test(sql)) {
+            const result = await prisma.$queryRawUnsafe(convertedSql);
+            if (callback) callback(null, result);
+            return;
+          }
           const result = await prisma.$executeRawUnsafe(convertedSql);
           if (callback) callback(null, { affectedRows: result });
           return;

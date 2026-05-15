@@ -3204,9 +3204,10 @@ app.post('/api/tickets', upload.array('files'), (req, res, next) => {
                     console.error('Error inserting ticket with attachments:', err);
                     return res.status(500).json({ error: 'Failed to save ticket' });
                 }
-                const ticket = { id: result.insertId, ticket_type: ticket_type || null, subject, customer_name, customer_phone, assignee, priority, status: status || 'Open', content, tags: tagsText, attachments, sla_due: slaDueDate.toISOString(), created_at: new Date().toISOString() };
+                const ticketId = result?.insertId ?? (Array.isArray(result) && result[0]?.id) ?? result?.id ?? null;
+                const ticket = { id: ticketId, ticket_type: ticket_type || null, subject, customer_name, customer_phone, assignee, priority, status: status || 'Open', content, tags: tagsText, attachments, sla_due: slaDueDate.toISOString(), created_at: new Date().toISOString() };
                 io.emit('ticketCreated', ticket);
-                res.json({ id: result.insertId, success: true });
+                res.json({ id: ticketId, success: true });
             }
         );
     }catch(err){
@@ -3233,8 +3234,9 @@ app.post("/api/tickets", (req, res) => {
                 console.error('Error inserting ticket:', err);
                 return res.status(500).json({ error: 'Failed to save ticket' });
             }
+            const ticketId = result?.insertId ?? (Array.isArray(result) && result[0]?.id) ?? result?.id ?? null;
             const ticket = {
-                id: result.insertId,
+                id: ticketId,
                 ticket_type: ticket_type || null,
                 subject: subject || null,
                 customer_name: customer_name || null,
@@ -3249,7 +3251,7 @@ app.post("/api/tickets", (req, res) => {
                 escalated: 0
             };
             io.emit("ticketCreated", ticket);
-            res.json({ id: result.insertId, success: true });
+            res.json({ id: ticketId, success: true });
         }
     );
 });
@@ -4142,11 +4144,22 @@ app.post('/api/settings', (req, res) => {
 });
 
 // Upload avatar image for current user
-app.post('/api/settings/avatar', isAuthenticated, upload.single('avatar'), (req, res) => {
+function handleAvatarUpload(req, res, next) {
+    upload.single('avatar')(req, res, (err) => {
+        if (err) {
+            console.error('Multer avatar upload error', err);
+            return res.status(500).json({ error: 'upload_error', message: err.message });
+        }
+        next();
+    });
+}
+
+app.post('/api/settings/avatar', isAuthenticated, handleAvatarUpload, (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ error: 'no_file' });
         const url = `/uploads/${req.file.filename}`;
-        const userId = req.session.userId;
+        const userId = req.session.userId || (req.session.user && req.session.user.id);
+        if (!userId) return res.status(401).json({ error: 'not_logged_in' });
         // store avatar metadata in user_avatars table
         const insertSql = isPg
             ? 'INSERT INTO user_avatars (user_id, filename, url) VALUES (?, ?, ?) RETURNING id'
@@ -4154,9 +4167,9 @@ app.post('/api/settings/avatar', isAuthenticated, upload.single('avatar'), (req,
         db.query(insertSql, [userId, req.file.filename, url], (err, result) => {
             if (err) {
                 console.error('Error inserting into user_avatars', err);
-                return res.status(500).json({ error: 'db_error' });
+                return res.status(500).json({ error: 'db_error', message: err.message || 'Failed to save avatar metadata' });
             }
-            const avatarId = result.insertId;
+            const avatarId = result?.insertId ?? (Array.isArray(result) && result[0] && result[0].id) ?? null;
             // update settings.avatar_url for quick lookup
             const avatarSql = isPg
                 ? 'INSERT INTO settings (user_id, avatar_url) VALUES (?, ?) ON CONFLICT (user_id) DO UPDATE SET avatar_url = EXCLUDED.avatar_url'
@@ -4172,7 +4185,7 @@ app.post('/api/settings/avatar', isAuthenticated, upload.single('avatar'), (req,
         });
     } catch (e) {
         console.error('avatar upload error', e);
-        res.status(500).json({ error: 'internal' });
+        res.status(500).json({ error: 'internal', message: e.message });
     }
 });
 

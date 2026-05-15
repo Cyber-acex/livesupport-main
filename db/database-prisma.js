@@ -11,17 +11,9 @@ const pool = new Pool({
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
-function convertSqlPlaceholders(sql, params) {
+function convertSqlPlaceholders(sql) {
   let paramIndex = 0;
-  return sql.replace(/\?/g, () => {
-    const param = params?.[paramIndex++];
-    if (param === null || param === undefined) return 'NULL';
-    if (typeof param === 'string') return `'${param.replace(/'/g, "''")}'`;
-    if (typeof param === 'number') return param.toString();
-    if (typeof param === 'boolean') return param ? 'TRUE' : 'FALSE';
-    if (param instanceof Date) return `'${param.toISOString()}'`;
-    return String(param);
-  });
+  return sql.replace(/\?/g, () => `$${++paramIndex}`);
 }
 
 const db = {
@@ -29,42 +21,37 @@ const db = {
     if (typeof params === 'function') {
       callback = params;
       params = [];
-    } else if (!Array.isArray(params)) {
-      params = params ? [params] : [];
     }
+
+    const paramsArray = Array.isArray(params)
+      ? params
+      : params !== undefined && params !== null
+      ? [params]
+      : [];
 
     setImmediate(async () => {
       try {
         const sqlUpper = sql.toUpperCase().trim();
-
-        const convertedSql = convertSqlPlaceholders(sql, params);
-
-        if (sqlUpper.startsWith('CREATE') || sqlUpper.startsWith('ALTER') || sqlUpper.startsWith('DROP')) {
-          const result = await pool.query(convertedSql);
-          if (callback) callback(null, result);
-          return;
-        }
+        const convertedSql = convertSqlPlaceholders(sql);
+        const result = await pool.query(convertedSql, paramsArray);
 
         if (sqlUpper.startsWith('SELECT')) {
-          const result = await prisma.$queryRawUnsafe(convertedSql);
-          if (callback) callback(null, result);
+          if (callback) callback(null, result.rows);
           return;
         }
 
         if (sqlUpper.startsWith('INSERT') || sqlUpper.startsWith('UPDATE') || sqlUpper.startsWith('DELETE')) {
           if (/RETURNING\s+/i.test(sql)) {
-            const result = await prisma.$queryRawUnsafe(convertedSql);
-            if (callback) callback(null, result);
+            if (callback) callback(null, result.rows);
             return;
           }
-          const result = await prisma.$executeRawUnsafe(convertedSql);
-          if (callback) callback(null, { affectedRows: result });
+          if (callback) callback(null, { affectedRows: result.rowCount });
           return;
         }
 
-        if (callback) callback(null, { ok: true });
+        if (callback) callback(null, result);
       } catch (error) {
-        console.error('Database query error:', error.message, { sql: sql.substring(0, 100), params });
+        console.error('Database query error:', error.message, { sql: sql.substring(0, 100), params: paramsArray });
         if (callback) callback(error);
       }
     });

@@ -226,7 +226,7 @@ if (isPg) {
     // Postgres-friendly DDL
     db.query(`
         CREATE TABLE IF NOT EXISTS conversations (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             phone VARCHAR(255),
             name VARCHAR(255),
             platform VARCHAR(50) DEFAULT 'whatsapp',
@@ -239,7 +239,7 @@ if (isPg) {
 
     db.query(`
         CREATE TABLE IF NOT EXISTS resolved (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             conversation_id INT,
             resolved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (conversation_id) REFERENCES conversations(id)
@@ -248,7 +248,7 @@ if (isPg) {
 
     db.query(`
         CREATE TABLE IF NOT EXISTS escalations (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             conversation_id INT UNIQUE,
             customer_name VARCHAR(255),
             escalated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -262,7 +262,7 @@ if (isPg) {
     // Create AI/staff split message tables (optional enhanced schema)
     db.query(`
         CREATE TABLE IF NOT EXISTS ai_messages (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             conversation_id INT,
             sender VARCHAR(255),
             message TEXT,
@@ -273,7 +273,7 @@ if (isPg) {
 
     db.query(`
         CREATE TABLE IF NOT EXISTS staff_messages (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             conversation_id INT,
             sender VARCHAR(255),
             message TEXT,
@@ -284,7 +284,7 @@ if (isPg) {
     // Create tables with spaces in names as requested
     db.query(`
         CREATE TABLE IF NOT EXISTS "ai replies" (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             conversation_id INT,
             sender VARCHAR(255),
             message TEXT,
@@ -295,7 +295,7 @@ if (isPg) {
 
     db.query(`
         CREATE TABLE IF NOT EXISTS "staff replies" (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             conversation_id INT,
             sender VARCHAR(255),
             message TEXT,
@@ -308,7 +308,7 @@ if (isPg) {
 
     db.query(`
         CREATE TABLE IF NOT EXISTS refunds (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             conversation_id INT,
             customer_name VARCHAR(255),
             refunded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -318,7 +318,7 @@ if (isPg) {
 
     db.query(`
         CREATE TABLE IF NOT EXISTS ai_feedback (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             conversation_id INT NULL,
             message_id INT NULL,
             user_id INT NULL,
@@ -335,7 +335,7 @@ if (isPg) {
 
     db.query(`
         CREATE TABLE IF NOT EXISTS users (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             email VARCHAR(255) UNIQUE,
             password VARCHAR(255),
             name VARCHAR(255),
@@ -347,7 +347,7 @@ if (isPg) {
 
     db.query(`
         CREATE TABLE IF NOT EXISTS delivery_issues (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             conversation_id INT,
             customer_name VARCHAR(255),
             reported_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -361,7 +361,7 @@ if (isPg) {
 
     db.query(`
         CREATE TABLE IF NOT EXISTS whatsapp_tokens (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             token TEXT,
             expires_at TIMESTAMP,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -370,7 +370,7 @@ if (isPg) {
 
     db.query(`
         CREATE TABLE IF NOT EXISTS instagram_tokens (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             token TEXT,
             expires_at TIMESTAMP,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -662,8 +662,8 @@ app.get('/api/ai-feedback', async (req, res) => {
 if (isPg) {
     db.query(`
         CREATE TABLE IF NOT EXISTS settings (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            user_id INT UNIQUE,
+            id SERIAL PRIMARY KEY,
+            user_id INTEGER UNIQUE,
             displayName VARCHAR(255),
             email VARCHAR(255),
             password VARCHAR(255),
@@ -676,13 +676,13 @@ if (isPg) {
             autoAssign VARCHAR(10),
             theme VARCHAR(20),
             FOREIGN KEY (user_id) REFERENCES users(id)
-        );
+        )
     `, (err) => { if (err) console.log('Error creating settings table (pg):', err); });
 
     db.query(`
         CREATE TABLE IF NOT EXISTS messages (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            conversation_id INT,
+            id SERIAL PRIMARY KEY,
+            conversation_id INTEGER,
             sender VARCHAR(50),
             message TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -692,8 +692,8 @@ if (isPg) {
 
     db.query(`
         CREATE TABLE IF NOT EXISTS instagram_conversations (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            conversation_id INT UNIQUE,
+            id SERIAL PRIMARY KEY,
+            conversation_id INTEGER UNIQUE,
             ig_id VARCHAR(255),
             ig_username VARCHAR(255),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -703,8 +703,8 @@ if (isPg) {
 
     db.query(`
         CREATE TABLE IF NOT EXISTS replies (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            conversation_id INT,
+            id SERIAL PRIMARY KEY,
+            conversation_id INTEGER,
             sender VARCHAR(50),
             message TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -712,11 +712,11 @@ if (isPg) {
         );
     `, (err) => { if (err) console.log('Error creating replies table (pg):', err); });
 
-    db.query("ALTER TABLE replies ADD COLUMN IF NOT EXISTS user_id INT", (err) => { if (err) console.log('Error adding user_id to replies (pg):', err); });
+    db.query("ALTER TABLE replies ADD COLUMN IF NOT EXISTS user_id INTEGER", (err) => { if (err) console.log('Error adding user_id to replies (pg):', err); });
 
     db.query(`
         CREATE TABLE IF NOT EXISTS receipts (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             content TEXT,
             escalated BOOLEAN DEFAULT false,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -725,7 +725,7 @@ if (isPg) {
 
     db.query(`
         CREATE TABLE IF NOT EXISTS tickets (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             content TEXT,
             escalated BOOLEAN DEFAULT false,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -1204,7 +1204,7 @@ app.get('/api/tables', (req, res) => {
 if (isPg) {
     db.query(`
         CREATE TABLE IF NOT EXISTS foods (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             category VARCHAR(100) NOT NULL,
             key_name VARCHAR(100) NOT NULL,
             name VARCHAR(255) NOT NULL,
@@ -1613,7 +1613,7 @@ db.query("ALTER TABLE settings ADD COLUMN IF NOT EXISTS autopilotMode VARCHAR(20
 if (isPg) {
     db.query(`
         CREATE TABLE IF NOT EXISTS user_avatars (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             user_id INT NOT NULL,
             filename VARCHAR(255) NOT NULL,
             url TEXT NOT NULL,
@@ -4527,7 +4527,7 @@ const PORT = process.env.PORT || 3000;
 if (isPg) {
     db.query(`
         CREATE TABLE IF NOT EXISTS deliveries (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             order_id INT NOT NULL,
             rider_name VARCHAR(255),
             vehicle VARCHAR(128),

@@ -856,14 +856,18 @@ app.use((req, res, next) => {
 // Serve favicon explicitly to avoid caching/path issues
 app.get('/favicon.svg', (req, res) => {
     res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
-    res.sendFile(path.join(__dirname, 'public', 'favicon.svg'));
+    res.sendFile(path.join(__dirname, 'public', 'favicon.png'));
 });
 app.get('/favicon.ico', (req, res) => {
-    res.redirect('/favicon.svg');
+    res.redirect('/favicon.png');
 });
 app.get('/favicon-icon.svg', (req, res) => {
     res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
-    res.sendFile(path.join(__dirname, 'public', 'favicon-icon.svg'));
+    res.sendFile(path.join(__dirname, 'public', 'favicon.png'));
+});
+app.get('/favicon.png', (req, res) => {
+    res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+    res.sendFile(path.join(__dirname, 'public', 'favicon.png'));
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -1928,6 +1932,12 @@ app.get("/api/suggest-reply/:id", async (req, res) => {
 // ---------------------------
 async function sendAutoReply(phone, message) {
     try {
+        // Ensure phone is in E.164 format for WhatsApp (add + if missing)
+        let formattedPhone = phone;
+        if (!formattedPhone.startsWith('+')) {
+            formattedPhone = '+' + formattedPhone.replace(/\D/g, '');
+        }
+
         const token = await getWhatsAppToken();
         const response = await fetch(
             `https://graph.facebook.com/v18.0/${process.env.PHONE_NUMBER_ID}/messages`,
@@ -1939,7 +1949,7 @@ async function sendAutoReply(phone, message) {
                 },
                 body: JSON.stringify({
                     messaging_product: "whatsapp",
-                    to: phone,
+                    to: formattedPhone,
                     type: "text",
                     text: { body: message }
                 })
@@ -2635,9 +2645,14 @@ app.post("/api/send-message", async (req, res) => {
             }
         }
 
-        const targetPhone = result && result.length > 0 ? result[0].phone : phone;
+        let targetPhone = result && result.length > 0 ? result[0].phone : phone;
         if (!targetPhone) {
             return res.status(400).json({ error: "Missing phone for sending message." });
+        }
+
+        // Ensure phone is in E.164 format for WhatsApp (add + if missing)
+        if (!targetPhone.startsWith('+')) {
+            targetPhone = '+' + targetPhone.replace(/\D/g, '');
         }
 
         try {
@@ -2665,7 +2680,13 @@ app.post("/api/send-message", async (req, res) => {
 
             if (!response.ok || (data && data.error)) {
                 console.error("WhatsApp API send-message error:", response.status, data);
-                return res.status(response.ok ? 500 : response.status).json({ error: data.error || data || 'WhatsApp API error' });
+                let errorMsg = 'WhatsApp API error';
+                if (data && data.error) {
+                    errorMsg = typeof data.error === 'string' ? data.error : JSON.stringify(data.error);
+                } else if (data) {
+                    errorMsg = JSON.stringify(data);
+                }
+                return res.status(response.ok ? 500 : response.status).json({ error: errorMsg });
             }
 
             // Save to DB
@@ -2720,6 +2741,12 @@ app.post("/api/send-media", upload.single("file"), (req, res) => {
 
         const phone = result[0].phone;
 
+        // Ensure phone is in E.164 format for WhatsApp (add + if missing)
+        let formattedPhone = phone;
+        if (!formattedPhone.startsWith('+')) {
+            formattedPhone = '+' + formattedPhone.replace(/\D/g, '');
+        }
+
         try {
             const fileBuffer = await fs.promises.readFile(file.path);
             const boundary = "----WhatsAppFormBoundary" + Date.now();
@@ -2760,7 +2787,7 @@ app.post("/api/send-media", upload.single("file"), (req, res) => {
             const mediaType = file.mimetype.startsWith("image/") ? "image" : "document";
             const messageBody = {
                 messaging_product: "whatsapp",
-                to: phone,
+                to: formattedPhone,
                 type: mediaType,
                 [mediaType]: { id: mediaId }
             };

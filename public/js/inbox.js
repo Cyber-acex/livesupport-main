@@ -1089,13 +1089,14 @@ sendButton.addEventListener("click", async () => {
         try {
             const json = await res.json();
             if (json && json.error) {
-                errorText = json.error;
+                errorText = typeof json.error === 'string' ? json.error : JSON.stringify(json.error);
             }
         } catch (e) {
             console.error('send-message response parse error', e);
+            errorText = `HTTP ${res.status}: ${res.statusText}`;
         }
         alert(errorText);
-        console.error('send-message failed', res.status, res.statusText);
+        console.error('send-message failed', res.status, res.statusText, errorText);
     }
 
     setSendButtonState(false);

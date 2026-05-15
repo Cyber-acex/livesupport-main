@@ -2,8 +2,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" href="/favicon-icon.svg" type="image/svg+xml">
-  <link rel="shortcut icon" href="/favicon-icon.svg">
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="shortcut icon" href="/favicon.png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script>document.documentElement.classList.add('ls-js');</script>
@@ -680,17 +680,36 @@
     // reset form
     document.getElementById('ticketForm').reset();
     document.getElementById('filePreview').textContent = '';
-    modal.style.display = 'block';
+    modal.style.display = 'flex';
+    modal.classList.add('active');
   };
-  closeBtn.onclick = () => modal.style.display = "none";
+  closeBtn.onclick = () => {
+    modal.style.display = 'none';
+    modal.classList.remove('active');
+  };
   const cancelBtn = document.getElementById('cancelTicket');
-  if(cancelBtn) cancelBtn.onclick = () => modal.style.display = 'none';
-  window.addEventListener('click', (e)=>{ if(e.target===modal) modal.style.display='none'; });
+  if(cancelBtn) cancelBtn.onclick = () => {
+    modal.style.display = 'none';
+    modal.classList.remove('active');
+  };
+  window.addEventListener('click', (e)=>{ if(e.target===modal) {
+    modal.style.display='none';
+    modal.classList.remove('active');
+  }});
   
   // View modal handlers
-  viewCloseBtn.onclick = () => viewModal.style.display = "none";
-  viewCloseTicketBtn.onclick = () => viewModal.style.display = "none";
-  window.addEventListener('click', (e)=>{ if(e.target===viewModal) viewModal.style.display='none'; });
+  viewCloseBtn.onclick = () => {
+    viewModal.style.display = 'none';
+    viewModal.classList.remove('active');
+  };
+  viewCloseTicketBtn.onclick = () => {
+    viewModal.style.display = 'none';
+    viewModal.classList.remove('active');
+  };
+  window.addEventListener('click', (e)=>{ if(e.target===viewModal) {
+    viewModal.style.display='none';
+    viewModal.classList.remove('active');
+  }});
   // enhanced save: send structured ticket data; supports FormData if files selected
   saveBtn.onclick = async () => {
     const ticketType = document.getElementById('ticketType').value.trim();
@@ -914,7 +933,8 @@
           }
         }catch(e){ attachmentsField.style.display = 'none'; }
         
-        viewModal.style.display = 'block';
+        viewModal.style.display = 'flex';
+        viewModal.classList.add('active');
       });
       card.querySelector('.escalateBtn').addEventListener('click', async ()=>{
         await fetch('/api/escalate-ticket', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ticket_id: t.id})});
@@ -1014,4 +1034,5 @@
 </script>
 </body>
 </html>
+
 

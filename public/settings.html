@@ -300,17 +300,53 @@ input:checked + .slider {
   <script src="/socket.io/socket.io.js"></script>
   <script src="./js/admin-users.js"></script>
   <style>
-    .settings-container { display: flex; }
-    .settings-sidebar { width: 220px; background: #2c3e50; color: white; padding: 20px; }
+    .settings-container {
+      display: flex;
+      gap: 24px;
+      padding: 20px;
+      min-height: calc(100vh - 60px);
+      box-sizing: border-box;
+    }
+    .settings-sidebar {
+      width: 220px;
+      background: #2c3e50;
+      color: white;
+      padding: 20px;
+      min-height: calc(100vh - 60px);
+      position: sticky;
+      top: 60px;
+      align-self: flex-start;
+    }
     .settings-sidebar button {
       display: block; width: 100%; margin: 10px 0; padding: 10px;
       background: none; border: none; color: white; text-align: left; cursor: pointer;
     }
     .settings-sidebar button:hover { background: #34495e; }
 
-    .settings-content { flex: 1; padding: 20px; }
+    .settings-content {
+      flex: 1;
+      padding: 20px;
+      min-height: calc(100vh - 100px);
+      overflow-y: auto;
+    }
     .settings-section { display: none; }
     .settings-section.active { display: block; }
+
+    @media (max-width: 1024px) {
+      .settings-container {
+        flex-direction: column;
+        min-height: auto;
+      }
+      .settings-sidebar {
+        width: 100%;
+        position: relative;
+        top: 0;
+        min-height: auto;
+      }
+      .settings-content {
+        min-height: auto;
+      }
+    }
 
     .form-group { margin-bottom: 15px; }
     label { display: block; margin-bottom: 5px; }

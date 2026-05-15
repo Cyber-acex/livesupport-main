@@ -1262,9 +1262,33 @@ document.getElementById("closeNotification").addEventListener("click", hideNotif
 // ---------------------------
 // Function to play notification sound
 // ---------------------------
-function playNotificationSound(beepCount = 1, beepDuration = 0.6, gap = 0.6) {
-    // No-op: disabled beep playback to avoid intrusive sounds for staff.
-    return;
+function playNotificationSound(beepCount = 2, beepDuration = 0.18, gap = 0.18) {
+    try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const audioCtx = new AudioContext();
+        let startTime = audioCtx.currentTime;
+
+        for (let i = 0; i < beepCount; i++) {
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.type = 'sine';
+            oscillator.frequency.value = 880;
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            gainNode.gain.setValueAtTime(0.0001, startTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.25, startTime + 0.01);
+            gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + beepDuration);
+
+            oscillator.start(startTime);
+            oscillator.stop(startTime + beepDuration);
+
+            startTime += beepDuration + gap;
+        }
+    } catch (error) {
+        console.log('Notification sound failed:', error);
+    }
 }
 
 // ---------------------------
@@ -1368,9 +1392,8 @@ filterButtons.forEach(btn => {
 });
 
 // Local notification sound helper (simple beep sequence)
-function playLocalNotificationSound(beepCount = 3, beepDuration = 0.22, gap = 0.15) {
-    // No-op: local notification beeps disabled.
-    return;
+function playLocalNotificationSound(beepCount = 2, beepDuration = 0.22, gap = 0.15) {
+    playNotificationSound(beepCount, beepDuration, gap);
 }
 
 // When the server assigns an escalation to this staff member

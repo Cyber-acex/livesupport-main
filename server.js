@@ -15,7 +15,7 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import { db, connectDatabase, config as dbConfig } from "./db/database.js";
-import { getMistralReply, initDatabase, setDisableAICallback, setHandoffCallback, isTicketCreationRequest, isRequestingStaff, MENU_ITEMS, createTicket, detectTicketCategory } from "./replies.js";
+import { getMistralReply, initDatabase, setDisableAICallback, setHandoffCallback, setPlayHandoffAudioCallback, isTicketCreationRequest, isRequestingStaff, MENU_ITEMS, createTicket, detectTicketCategory } from "./replies.js";
 const app = express();
 
 const upload = multer({ dest: path.join(__dirname, "uploads") });
@@ -75,6 +75,12 @@ function disableAIForConversation(conversationId, source = 'agent') {
 // Set the callback for disabling AI in replies module
 setDisableAICallback((conversationId) => {
     disableAIForConversation(conversationId, 'handoff');
+});
+
+// Set the callback for playing handoff audio
+setPlayHandoffAudioCallback((conversationId) => {
+    console.log(`Playing handoff audio for conversation ${conversationId}`);
+    io.emit('playHandoffAudio', { conversationId });
 });
 
 // Check if AI should respond to a conversation
@@ -3169,7 +3175,8 @@ app.post('/api/tickets', upload.array('files'), (req, res, next) => {
     try{
         const { ticket_type, subject, customer_name, customer_phone, assignee, priority, status, content, tags } = req.body || {};
         const tagsText = tags ? (Array.isArray(tags) ? JSON.stringify(tags) : tags) : null;
-        const slaDue = req.body.sla_due ? new Date(req.body.sla_due) : computeSlaDue(assignee, ticket_type);
+        const slaDueDate = req.body.sla_due ? new Date(req.body.sla_due) : computeSlaDue(assignee, ticket_type);
+        const slaDue = slaDueDate.toISOString().slice(0, 19).replace('T', ' ');
         const attachments = (req.files || []).map(f => ({ originalname: f.originalname, filename: f.filename, path: f.path, size: f.size }));
         const insertSql = isPg
             ? `INSERT INTO tickets (ticket_type, subject, customer_name, customer_phone, assignee, priority, status, content, tags, attachments, sla_due) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id`
@@ -3182,7 +3189,7 @@ app.post('/api/tickets', upload.array('files'), (req, res, next) => {
                     console.error('Error inserting ticket with attachments:', err);
                     return res.status(500).json({ error: 'Failed to save ticket' });
                 }
-                const ticket = { id: result.insertId, ticket_type: ticket_type || null, subject, customer_name, customer_phone, assignee, priority, status: status || 'Open', content, tags: tagsText, attachments, sla_due: slaDue.toISOString(), created_at: new Date().toISOString() };
+                const ticket = { id: result.insertId, ticket_type: ticket_type || null, subject, customer_name, customer_phone, assignee, priority, status: status || 'Open', content, tags: tagsText, attachments, sla_due: slaDueDate.toISOString(), created_at: new Date().toISOString() };
                 io.emit('ticketCreated', ticket);
                 res.json({ id: result.insertId, success: true });
             }
@@ -3198,7 +3205,8 @@ app.post("/api/tickets", (req, res) => {
     // Accept richer ticket fields from the dashboard modal (JSON submission)
     const { ticket_type, subject, customer_name, customer_phone, assignee, priority, status, content, tags } = req.body || {};
     const tagsText = Array.isArray(tags) ? JSON.stringify(tags) : (tags || null);
-    const slaDue = req.body.sla_due ? new Date(req.body.sla_due) : computeSlaDue(assignee, ticket_type);
+    const slaDueDate = req.body.sla_due ? new Date(req.body.sla_due) : computeSlaDue(assignee, ticket_type);
+    const slaDue = slaDueDate.toISOString().slice(0, 19).replace('T', ' ');
     const insertSql = isPg
         ? `INSERT INTO tickets (ticket_type, subject, customer_name, customer_phone, assignee, priority, status, content, tags, sla_due) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id`
         : `INSERT INTO tickets (ticket_type, subject, customer_name, customer_phone, assignee, priority, status, content, tags, sla_due) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
@@ -3221,7 +3229,7 @@ app.post("/api/tickets", (req, res) => {
                 status: status || 'Open',
                 content: content || null,
                 tags: tagsText,
-                sla_due: slaDue.toISOString(),
+                sla_due: slaDueDate.toISOString(),
                 created_at: new Date().toISOString(),
                 escalated: 0
             };

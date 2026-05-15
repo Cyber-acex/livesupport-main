@@ -208,6 +208,7 @@ function getOrderHistory(phone) {
 
 let disableAICallback = null;
 let handoffCallback = null;
+let playHandoffAudioCallback = null;
 
 // Set the callback to disable AI (called from server.js)
 function setDisableAICallback(callback) {
@@ -217,6 +218,11 @@ function setDisableAICallback(callback) {
 // Set the callback to notify the server when the AI hands off to staff
 function setHandoffCallback(callback) {
     handoffCallback = callback;
+}
+
+// Set the callback to play handoff audio
+function setPlayHandoffAudioCallback(callback) {
+    playHandoffAudioCallback = callback;
 }
 
 function isRequestingStaff(message) {
@@ -875,6 +881,9 @@ async function getMistralReply(message, phone = null, conversationId = null) {
             if (conversationId && handoffCallback) {
                 handoffCallback(conversationId);
             }
+            if (conversationId && playHandoffAudioCallback) {
+                playHandoffAudioCallback(conversationId);
+            }
             return "I'm connecting you with our support team. One of our agents will be with you shortly to assist you.";
         }
 
@@ -1023,4 +1032,4 @@ The customer appears to be placing an order but I couldn't identify the specific
     }
 }
 
-export { getMistralReply, initDatabase, setDisableAICallback, setHandoffCallback, isTicketCreationRequest, isRequestingStaff, isHandoffReply, MENU_ITEMS, createTicket, detectTicketCategory };
+export { getMistralReply, initDatabase, setDisableAICallback, setHandoffCallback, setPlayHandoffAudioCallback, isTicketCreationRequest, isRequestingStaff, isHandoffReply, MENU_ITEMS, createTicket, detectTicketCategory };

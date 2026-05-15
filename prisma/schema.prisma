@@ -242,6 +242,7 @@ model Ticket {
   status           String?   @default("Open") @db.VarChar(50)
   tags             String?   @db.Text
   attachments      String?   @db.Text
+  sla_due          DateTime? @db.Timestamp(0)
 
   @@map("tickets")
 }

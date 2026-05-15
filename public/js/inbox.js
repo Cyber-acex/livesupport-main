@@ -57,6 +57,11 @@ socket.on('stopTyping', (data) => {
     }
 });
 
+socket.on('playHandoffAudio', (data) => {
+    console.log('Received playHandoffAudio event in inbox.js', data);
+    playHandoffAudio();
+});
+
 function updatePresenceUI(agents) {
     // Ensure there's a container in the page
     let el = document.getElementById('agentsOnline');
@@ -67,6 +72,14 @@ function updatePresenceUI(agents) {
         span.className = 'agent-item';
         span.textContent = a.name + (a.activeConversation ? ` (on ${a.activeConversation})` : ' (online)');
         el.appendChild(span);
+    });
+}
+
+function playHandoffAudio() {
+    const audio = new Audio('/uploads/handoff.mp3');
+    audio.volume = 0.7;
+    audio.play().catch(error => {
+        console.log('Failed to play handoff audio:', error);
     });
 }
 

@@ -478,9 +478,8 @@ function createConversationElement(conv, filter = 'all') {
         window.currentConversation = conv.id;
         if (conv.unread_count) {
             conv.unread_count = 0;
-            const badge = div.querySelector('.unread-badge');
-            if (badge) badge.remove();
         }
+        clearConversationUnreadBadge(conv.id);
         markConversationViewed(conv.id);
         loadMessages(conv.id, filter === 'escalated');
         const displayName = conv.name || conv.phone || 'Customer';
@@ -763,9 +762,13 @@ function displayTicketActions(ticket) {
 async function loadMessages(conversationId, isEscalated = false) {
     if (!conversationId) return;
 
-    messagesContainer.innerHTML = `<div class="loading-message">Loading chat...</div>`;
+    clearConversationUnreadBadge(conversationId);
     const cachedConv = conversationCache.find(c => c.id == conversationId);
     if (cachedConv) {
+        if (cachedConv.unread_count) {
+            cachedConv.unread_count = 0;
+        }
+
         const displayName = cachedConv.name || cachedConv.phone || 'Customer';
         const chatNameEl = document.getElementById("chatName");
         if (chatNameEl) chatNameEl.textContent = displayName;
@@ -777,6 +780,7 @@ async function loadMessages(conversationId, isEscalated = false) {
         }
     }
 
+    messagesContainer.innerHTML = `<div class="loading-message">Loading chat...</div>`;
     const messagePromise = fetch(`/api/messages/${conversationId}`).then(res => res.json());
     const escalationPromise = fetch("/api/escalations").then(res => res.json());
 

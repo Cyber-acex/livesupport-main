@@ -1,0 +1,2732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="icon" href="/favicon-icon.svg" type="image/svg+xml">
+	<link rel="shortcut icon" href="/favicon-icon.svg">
+	<meta charset="UTF-8">
+	<title>LiveSupport - Enterprise Knowledge Base</title>
+	<script>document.documentElement.classList.add('ls-js');</script>
+	<link rel="stylesheet" href="./css/style.css">
+	<link rel="stylesheet" href="./css/sidebar.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<script>
+		// Apply theme from localStorage immediately to prevent flash
+		(function applyThemeImmediately() {
+			const theme = localStorage.getItem('theme') || 'Light';
+			if (theme === 'Dark') {
+				const style = document.createElement('style');
+				style.id = 'dark-mode-theme';
+				style.textContent = `
+					body { background: #1e1e1e !important; color: #ffffff !important; }
+					input, textarea, select { background: #2d2d2d !important; color: #ffffff !important; border-color: #444 !important; }
+					button { background: #0066cc !important; color: #ffffff !important; }
+					.main, .content, .topbar, .sidebar { background: #1e1e1e !important; color: #ffffff !important; }
+					a { color: #66b3ff !important; }
+					h1, h2, h3, h4, h5, h6 { color: #ffffff !important; }
+					label, span { color: #ffffff !important; }
+				`;
+				document.head.appendChild(style);
+			}
+		})();
+	</script>
+	<style>
+		/* Premium Corporate Styling */
+		:root {
+			--primary-color: #1a365d;
+			--secondary-color: #2d3748;
+			--accent-color: #3182ce;
+			--success-color: #38a169;
+			--warning-color: #d69e2e;
+			--danger-color: #e53e3e;
+			--light-bg: #f7fafc;
+			--card-bg: #ffffff;
+			--text-primary: #1a202c;
+			--text-secondary: #718096;
+			--border-color: #e2e8f0;
+			--shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+			--shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+		}
+
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+			margin: 0;
+			padding: 0;
+			background: var(--light-bg);
+			color: var(--text-primary);
+			line-height: 1.6;
+		}
+
+		.knowledge-base {
+			display: flex;
+			min-height: 100vh;
+		}
+
+		/* Sidebar Navigation */
+		.kb-sidebar {
+			width: 280px;
+			background: var(--card-bg);
+			border-right: 1px solid var(--border-color);
+			padding: 0;
+			box-shadow: var(--shadow);
+		}
+
+		.kb-sidebar-header {
+			padding: 24px;
+			border-bottom: 1px solid var(--border-color);
+			background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+			color: white;
+		}
+
+		.kb-sidebar-header h2 {
+			margin: 0;
+			font-size: 1.25rem;
+			font-weight: 600;
+		}
+
+		.kb-sidebar-header p {
+			margin: 4px 0 0 0;
+			font-size: 0.875rem;
+			opacity: 0.9;
+		}
+
+		.kb-nav {
+			padding: 16px 0;
+		}
+
+		.kb-nav-section {
+			margin-bottom: 24px;
+		}
+
+		.kb-nav-title {
+			padding: 8px 24px;
+			font-size: 0.75rem;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+			color: var(--text-secondary);
+			margin-bottom: 8px;
+		}
+
+		.kb-nav-item {
+			display: flex;
+			align-items: center;
+			padding: 12px 24px;
+			color: var(--text-secondary);
+			text-decoration: none;
+			transition: all 0.2s ease;
+			border-left: 3px solid transparent;
+		}
+
+		.kb-nav-item:hover {
+			background: var(--light-bg);
+			color: var(--text-primary);
+			border-left-color: var(--accent-color);
+		}
+
+		.kb-nav-item.active {
+			background: rgba(49, 130, 206, 0.1);
+			color: var(--accent-color);
+			border-left-color: var(--accent-color);
+			font-weight: 500;
+		}
+
+		.kb-nav-item i {
+			margin-right: 12px;
+			width: 16px;
+			text-align: center;
+		}
+
+		/* Main Content */
+		.kb-main {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.kb-header {
+			background: var(--card-bg);
+			border-bottom: 1px solid var(--border-color);
+			padding: 24px 32px;
+			box-shadow: var(--shadow);
+		}
+
+		.kb-header-content {
+			max-width: 1200px;
+			margin: 0 auto;
+		}
+
+		.kb-title {
+			font-size: 2rem;
+			font-weight: 700;
+			color: var(--text-primary);
+			margin: 0 0 8px 0;
+		}
+
+		.kb-subtitle {
+			font-size: 1rem;
+			color: var(--text-secondary);
+			margin: 0;
+		}
+
+		.kb-stats {
+			display: flex;
+			gap: 24px;
+			margin-top: 20px;
+		}
+
+		.kb-stat {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.kb-stat i {
+			color: var(--accent-color);
+		}
+
+		.kb-stat span {
+			font-size: 0.875rem;
+			color: var(--text-secondary);
+		}
+
+		/* Search Section */
+		.kb-search-section {
+			background: var(--card-bg);
+			padding: 32px;
+			border-bottom: 1px solid var(--border-color);
+		}
+
+		.kb-search-container {
+			max-width: 800px;
+			margin: 0 auto;
+		}
+
+		.kb-search-wrapper {
+			position: relative;
+			margin-bottom: 16px;
+		}
+
+		.kb-search-input {
+			width: 100%;
+			padding: 16px 20px 16px 52px;
+			border: 2px solid var(--border-color);
+			border-radius: 12px;
+			font-size: 1rem;
+			transition: all 0.2s ease;
+			background: var(--light-bg);
+		}
+
+		.kb-search-input:focus {
+			outline: none;
+			border-color: var(--accent-color);
+			box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+		}
+
+		.kb-search-icon {
+			position: absolute;
+			left: 16px;
+			top: 50%;
+			transform: translateY(-50%);
+			color: var(--text-secondary);
+			font-size: 1.25rem;
+		}
+
+		.kb-search-hint {
+			text-align: center;
+			color: var(--text-secondary);
+			font-size: 0.875rem;
+		}
+
+		/* Content Area */
+		.kb-content {
+			flex: 1;
+			padding: 32px;
+			max-width: 1200px;
+			margin: 0 auto;
+			width: 100%;
+		}
+
+		.kb-section {
+			margin-bottom: 48px;
+		}
+
+		.kb-section-title {
+			font-size: 1.5rem;
+			font-weight: 600;
+			color: var(--text-primary);
+			margin: 0 0 24px 0;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+
+		.kb-section-title i {
+			color: var(--accent-color);
+		}
+
+		/* Article Grid */
+		.articles-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+			gap: 24px;
+		}
+
+		.article-card {
+			background: var(--card-bg);
+			border: 1px solid var(--border-color);
+			border-radius: 12px;
+			padding: 24px;
+			transition: all 0.3s ease;
+			cursor: pointer;
+			box-shadow: var(--shadow);
+		}
+
+		.article-card:hover {
+			transform: translateY(-4px);
+			box-shadow: var(--shadow-lg);
+			border-color: var(--accent-color);
+		}
+
+		.article-icon {
+			width: 48px;
+			height: 48px;
+			border-radius: 12px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: linear-gradient(135deg, var(--accent-color) 0%, #2c5282 100%);
+			color: white;
+			font-size: 1.25rem;
+			margin-bottom: 16px;
+		}
+
+		.article-title {
+			font-size: 1.125rem;
+			font-weight: 600;
+			color: var(--text-primary);
+			margin: 0 0 8px 0;
+		}
+
+		.article-description {
+			color: var(--text-secondary);
+			font-size: 0.875rem;
+			line-height: 1.5;
+			margin: 0 0 16px 0;
+		}
+
+		.article-meta {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			font-size: 0.75rem;
+			color: var(--text-secondary);
+		}
+
+		.article-category {
+			background: rgba(49, 130, 206, 0.1);
+			color: var(--accent-color);
+			padding: 4px 8px;
+			border-radius: 6px;
+			font-weight: 500;
+		}
+
+		.article-views {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+		}
+
+		/* Article Detail Modal */
+		.article-modal {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.5);
+			z-index: 1000;
+			padding: 40px;
+		}
+
+		.article-modal.active {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.article-modal-content {
+			background: var(--card-bg);
+			border-radius: 16px;
+			max-width: 800px;
+			max-height: 80vh;
+			overflow-y: auto;
+			width: 100%;
+			box-shadow: var(--shadow-lg);
+		}
+
+		.article-modal-header {
+			padding: 24px 32px;
+			border-bottom: 1px solid var(--border-color);
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		.article-modal-title {
+			font-size: 1.5rem;
+			font-weight: 600;
+			color: var(--text-primary);
+			margin: 0;
+		}
+
+		.article-modal-close {
+			background: none;
+			border: none;
+			font-size: 1.5rem;
+			color: var(--text-secondary);
+			cursor: pointer;
+			padding: 8px;
+			border-radius: 6px;
+			transition: all 0.2s ease;
+		}
+
+		.article-modal-close:hover {
+			background: var(--light-bg);
+			color: var(--text-primary);
+		}
+
+		.article-modal-body {
+			padding: 32px;
+		}
+
+		.add-article-modal {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(12, 23, 44, 0.8);
+			backdrop-filter: blur(10px);
+			z-index: 10000;
+			align-items: center;
+			justify-content: center;
+			padding: 24px;
+		}
+
+		.add-article-modal.active {
+			display: flex;
+		}
+
+		.add-article-modal-content {
+			background: var(--card-bg);
+			border-radius: 24px;
+			width: min(960px, 100%);
+			max-height: 90vh;
+			overflow: hidden;
+			box-shadow: 0 30px 100px rgba(0,0,0,0.18);
+		}
+
+		.add-article-modal-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 28px 28px 16px;
+			border-bottom: 1px solid var(--border-color);
+		}
+
+		.add-article-modal-title {
+			font-size: 1.45rem;
+			font-weight: 700;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+
+		.add-article-modal-close {
+			background: transparent;
+			border: none;
+			font-size: 2rem;
+			line-height: 1;
+			color: var(--text-secondary);
+			cursor: pointer;
+		}
+
+		.add-article-modal-body {
+			padding: 24px 28px 30px;
+		}
+
+		.add-article-form {
+			display: grid;
+			gap: 18px;
+		}
+
+		.form-group {
+			display: grid;
+			gap: 8px;
+		}
+
+		.form-label {
+			font-size: 0.95rem;
+			font-weight: 600;
+			color: var(--text-primary);
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.form-input,
+		.form-select {
+			width: 100%;
+			padding: 14px 16px;
+			border: 1px solid var(--border-color);
+			border-radius: 14px;
+			background: var(--light-bg);
+			color: var(--text-primary);
+			font-size: 0.95rem;
+		}
+
+		.form-select {
+			appearance: none;
+		}
+
+		.editor-toolbar {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			padding: 10px 12px;
+			border: 1px solid var(--border-color);
+			border-radius: 14px 14px 0 0;
+			background: rgba(243, 244, 246, 0.95);
+		}
+
+		.toolbar-btn {
+			border: 1px solid rgba(113, 128, 150, 0.18);
+			background: white;
+			color: var(--text-secondary);
+			padding: 10px 14px;
+			border-radius: 12px;
+			cursor: pointer;
+			transition: background 0.2s ease, color 0.2s ease;
+		}
+
+		.toolbar-btn:hover {
+			background: var(--accent-color);
+			color: white;
+		}
+
+		.toolbar-separator {
+			display: inline-block;
+			width: 1px;
+			height: 20px;
+			background: var(--border-color);
+		}
+
+		.editor-container {
+			border: 1px solid var(--border-color);
+			border-radius: 0 0 14px 14px;
+			overflow: hidden;
+		}
+
+		.form-editor {
+			min-height: 220px;
+			padding: 18px 20px;
+			background: #fff;
+			color: var(--text-primary);
+			font-size: 0.98rem;
+			outline: none;
+		}
+
+		.form-editor:empty:before {
+			content: attr(placeholder);
+			display: block;
+			color: var(--text-secondary);
+		}
+
+		.form-hint {
+			font-size: 0.85rem;
+			color: var(--text-secondary);
+		}
+
+		.form-actions {
+			display: flex;
+			justify-content: flex-end;
+			gap: 12px;
+			flex-wrap: wrap;
+			margin-top: 8px;
+		}
+
+		.btn-primary,
+		.btn-secondary {
+			border: none;
+			border-radius: 999px;
+			padding: 12px 24px;
+			font-weight: 700;
+			cursor: pointer;
+		}
+
+		.btn-primary {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+		}
+
+		.btn-secondary {
+			background: transparent;
+			color: var(--text-primary);
+			border: 1px solid var(--border-color);
+		}
+
+		.btn-primary:hover,
+		.btn-secondary:hover {
+			transform: translateY(-1px);
+		}
+
+		.article-content {
+			line-height: 1.7;
+		}
+
+		.article-content h3 {
+			color: var(--text-primary);
+			margin: 24px 0 16px 0;
+		}
+
+		.article-content p {
+			margin: 0 0 16px 0;
+		}
+
+		.article-actions {
+			display: flex;
+			gap: 12px;
+			margin-top: 24px;
+			padding-top: 24px;
+			border-top: 1px solid var(--border-color);
+		}
+
+		.article-action-btn {
+			padding: 8px 16px;
+			border: 1px solid var(--border-color);
+			border-radius: 6px;
+			background: var(--light-bg);
+			color: var(--text-secondary);
+			cursor: pointer;
+			transition: all 0.2s ease;
+			font-size: 0.875rem;
+		}
+
+		.article-action-btn:hover {
+			background: var(--accent-color);
+			color: white;
+			border-color: var(--accent-color);
+		}
+
+		/* Quick Actions */
+		.quick-actions {
+			display: flex;
+			gap: 16px;
+			margin-bottom: 32px;
+		}
+
+		.quick-action-btn {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 12px 20px;
+			background: var(--card-bg);
+			border: 1px solid var(--border-color);
+			border-radius: 8px;
+			color: var(--text-primary);
+			text-decoration: none;
+			transition: all 0.2s ease;
+			box-shadow: var(--shadow);
+		}
+
+		.quick-action-btn:hover {
+			transform: translateY(-2px);
+			box-shadow: var(--shadow-lg);
+			border-color: var(--accent-color);
+		}
+
+		.quick-action-btn i {
+			font-size: 1.125rem;
+		}
+
+		/* Dark Theme */
+		.dark-theme {
+			--primary-color: #2d3748;
+			--secondary-color: #4a5568;
+			--light-bg: #1a202c;
+			--card-bg: #2d3748;
+			--text-primary: #f7fafc;
+			--text-secondary: #a0aec0;
+			--border-color: #4a5568;
+		}
+
+		.dark-theme .article-modal {
+			background: rgba(0, 0, 0, 0.7);
+		}
+
+		/* Responsive */
+		@media (max-width: 768px) {
+			.knowledge-base {
+				flex-direction: column;
+			}
+
+			.kb-sidebar {
+				width: 100%;
+				height: auto;
+			}
+
+			.articles-grid {
+				grid-template-columns: 1fr;
+			}
+
+			.kb-stats {
+				flex-direction: column;
+				gap: 12px;
+			}
+
+			.quick-actions {
+				flex-direction: column;
+			}
+		}
+	</style>
+	<style>
+		.brain {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			padding: 20px;
+			border-radius: 16px;
+			color: white;
+			font-size: 2.5rem;
+			font-weight: 700;
+			text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+			margin-bottom: 30px;
+			box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+		}
+		
+		.search-container {
+			display: flex;
+			gap: 10px;
+			margin-bottom: 30px;
+			align-items: center;
+		}
+		
+		#searchBar {
+			flex: 1;
+			padding: 15px 20px;
+			border: 2px solid #e1e5e9;
+			border-radius: 50px;
+			font-size: 16px;
+			transition: all 0.3s ease;
+			box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+		}
+		
+		#searchBar:focus {
+			outline: none;
+			border-color: #667eea;
+			box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+		}
+		
+		.voice-search-btn {
+			padding: 15px;
+			border: none;
+			border-radius: 50%;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);
+		}
+		
+		.voice-search-btn:hover {
+			transform: scale(1.05);
+			box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+		}
+		
+		.categories {
+			display: flex;
+			gap: 10px;
+			margin-bottom: 30px;
+			flex-wrap: wrap;
+		}
+		
+		.category-btn {
+			padding: 8px 16px;
+			border: 2px solid #667eea;
+			border-radius: 25px;
+			background: transparent;
+			color: #667eea;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			font-weight: 500;
+		}
+		
+		.category-btn:hover, .category-btn.active {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+		}
+		
+		.quick-access {
+			background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+			color: white;
+			padding: 20px;
+			border-radius: 16px;
+			margin-bottom: 30px;
+		}
+		
+		.quick-access h3 {
+			margin: 0 0 15px 0;
+			font-size: 1.5rem;
+		}
+		
+		.quick-links {
+			display: flex;
+			gap: 10px;
+			flex-wrap: wrap;
+		}
+		
+		.quick-link {
+			padding: 10px 15px;
+			border: 2px solid rgba(255,255,255,0.3);
+			border-radius: 25px;
+			background: rgba(255,255,255,0.1);
+			color: white;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			font-weight: 500;
+			backdrop-filter: blur(10px);
+		}
+		
+		.quick-link:hover {
+			background: rgba(255,255,255,0.2);
+			border-color: rgba(255,255,255,0.5);
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+		}
+		
+		.article {
+			background: white;
+			border-radius: 16px;
+			padding: 0;
+			margin-bottom: 20px;
+			box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+			transition: all 0.3s ease;
+			overflow: hidden;
+			border: 1px solid #e1e5e9;
+		}
+		
+		.article:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+		}
+		
+		.article.open {
+			box-shadow: 0 8px 32px rgba(102, 126, 234, 0.2);
+		}
+		
+		.article-header {
+			padding: 20px;
+			cursor: pointer;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+			border-bottom: 1px solid #dee2e6;
+		}
+		
+		.article h2 {
+			margin: 0;
+			color: #495057;
+			font-size: 1.25rem;
+			font-weight: 600;
+		}
+		
+		.article-toggle {
+			font-size: 1.5rem;
+			color: #6c757d;
+			transition: transform 0.3s ease;
+		}
+		
+		.article.open .article-toggle {
+			transform: rotate(180deg);
+		}
+		
+		.fruit {
+			padding: 20px;
+			background: white;
+			max-height: 0;
+			overflow: hidden;
+			transition: max-height 0.3s ease;
+		}
+		
+		.article.open .fruit {
+			max-height: 1000px;
+		}
+		
+				.article-actions {
+					display: flex;
+					gap: 10px;
+					margin-top: 15px;
+					flex-wrap: wrap;
+				}
+				
+				.related-articles {
+					margin-top: 15px;
+					padding: 15px;
+					background: rgba(102, 126, 234, 0.05);
+					border-radius: 8px;
+					border-left: 4px solid #667eea;
+				}
+				
+				.related-articles h4 {
+					margin: 0 0 10px 0;
+					color: #495057;
+					font-size: 1rem;
+				}
+				
+				.related-links {
+					display: flex;
+					gap: 10px;
+					flex-wrap: wrap;
+				}
+				
+				.related-link {
+					padding: 5px 10px;
+					background: #667eea;
+					color: white;
+					border-radius: 15px;
+					text-decoration: none;
+					font-size: 0.875rem;
+					transition: all 0.2s ease;
+					cursor: pointer;
+				}
+				
+				.related-link:hover {
+					background: #5a67d8;
+					transform: translateY(-1px);
+				}
+		
+		.action-btn {
+			padding: 6px 12px;
+			border: 1px solid #dee2e6;
+			border-radius: 6px;
+			background: #f8f9fa;
+			color: #495057;
+			cursor: pointer;
+			font-size: 0.875rem;
+			transition: all 0.2s ease;
+		}
+		
+		.action-btn:hover {
+			background: #e9ecef;
+			border-color: #adb5bd;
+		}
+		
+		.ai-assistant {
+			position: fixed;
+			bottom: 20px;
+			right: 20px;
+			width: 60px;
+			height: 60px;
+			border-radius: 50%;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			border: none;
+			color: white;
+			cursor: pointer;
+			box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+			transition: all 0.3s ease;
+			z-index: 1000;
+		}
+		
+		.ai-assistant:hover {
+			transform: scale(1.1);
+			box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+		}
+		
+		.recent-updates {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+			padding: 20px;
+			border-radius: 16px;
+			margin-bottom: 30px;
+		}
+		
+		.recent-updates h3 {
+			margin: 0 0 15px 0;
+			font-size: 1.5rem;
+		}
+		
+		.update-item {
+			padding: 10px 0;
+			border-bottom: 1px solid rgba(255,255,255,0.2);
+		}
+		
+		.update-item:last-child {
+			border-bottom: none;
+		}
+		
+		.faqhead {
+			display: flex;
+			justify-content: center;
+			color: #667eea;
+			font-size: 2rem;
+			font-weight: 700;
+			margin: 40px 0 20px 0;
+		}
+		
+		.faqsub {
+			color: #6c757d;
+			display: flex;
+			justify-content: center;
+			font-size: 1.1rem;
+			margin-bottom: 30px;
+		}
+		
+		/* Dark theme overrides */
+		.dark-theme .article {
+			background: linear-gradient(135deg, rgba(30, 27, 75, 0.6) 0%, rgba(30, 27, 75, 0.4) 100%);
+			border: 1px solid rgba(167, 139, 250, 0.2);
+			color: #e0e7ff;
+		}
+		
+		.dark-theme .article-header {
+			background: linear-gradient(135deg, rgba(30, 27, 75, 0.8) 0%, rgba(30, 27, 75, 0.6) 100%);
+			border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+		}
+		
+		.dark-theme .article h2 {
+			color: #e0e7ff;
+		}
+		
+		.dark-theme .fruit {
+			background: linear-gradient(135deg, rgba(30, 27, 75, 0.4) 0%, rgba(30, 27, 75, 0.2) 100%);
+		}
+		
+		.dark-theme .action-btn {
+			background: rgba(99, 102, 241, 0.1);
+			border: 1px solid rgba(167, 139, 250, 0.3);
+			color: #c7d2fe;
+		}
+		
+		.dark-theme .action-btn:hover {
+			background: rgba(99, 102, 241, 0.2);
+			border-color: rgba(167, 139, 250, 0.5);
+		}
+		
+		.dark-theme #searchBar {
+			background: rgba(30, 27, 75, 0.4);
+			border: 2px solid rgba(167, 139, 250, 0.3);
+			color: #e0e7ff;
+		}
+		
+		.dark-theme #searchBar:focus {
+			border-color: #667eea;
+			box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+		}
+		
+		.dark-theme .category-btn {
+			border: 2px solid #667eea;
+			color: #c7d2fe;
+			background: rgba(99, 102, 241, 0.1);
+		}
+		
+		.dark-theme .category-btn:hover, .dark-theme .category-btn.active {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+		}
+		
+		.dark-theme .related-articles {
+			background: rgba(99, 102, 241, 0.1);
+			border-left-color: #667eea;
+		}
+		
+		.dark-theme .related-articles h4 {
+			color: #e0e7ff;
+		}
+		
+		.dark-theme .related-link {
+			background: #667eea;
+			color: white;
+		}
+		
+		.dark-theme .related-link:hover {
+			background: #5a67d8;
+		}
+		
+		.theme-toggle-btn {
+			padding: 8px 12px;
+			border: 2px solid #667eea;
+			border-radius: 25px;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			margin-right: 15px;
+			font-size: 16px;
+		}
+		
+		.theme-toggle-btn:hover {
+			transform: scale(1.05);
+			box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+		}
+
+		/* Article Modal Body */
+		.article-modal-body {
+			padding: 24px 32px;
+			max-height: 70vh;
+			overflow-y: auto;
+		}
+
+		.article-content {
+			margin-bottom: 24px;
+		}
+
+		.article-content h3 {
+			color: var(--text-primary);
+			font-size: 1.25rem;
+			font-weight: 600;
+			margin: 24px 0 12px 0;
+		}
+
+		.article-content h3:first-child {
+			margin-top: 0;
+		}
+
+		.article-content p {
+			line-height: 1.6;
+			margin-bottom: 16px;
+		}
+
+		.article-content ul, .article-content ol {
+			margin: 16px 0;
+			padding-left: 24px;
+		}
+
+		.article-content li {
+			margin-bottom: 8px;
+		}
+
+		.article-actions {
+			display: flex;
+			gap: 12px;
+			padding-top: 24px;
+			border-top: 1px solid var(--border-color);
+		}
+
+		.article-action-btn {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 10px 16px;
+			background: var(--light-bg);
+			border: 1px solid var(--border-color);
+			border-radius: 8px;
+			color: var(--text-secondary);
+			text-decoration: none;
+			font-size: 0.875rem;
+			transition: all 0.2s ease;
+			cursor: pointer;
+		}
+
+		.article-action-btn:hover {
+			background: var(--accent-color);
+			color: white;
+			border-color: var(--accent-color);
+		}
+
+		/* Quick Actions */
+		.quick-actions {
+			display: flex;
+			gap: 16px;
+			margin-bottom: 48px;
+			flex-wrap: wrap;
+		}
+
+		.quick-action-btn {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			padding: 12px 20px;
+			background: linear-gradient(135deg, var(--accent-color) 0%, #2c5282 100%);
+			color: white;
+			text-decoration: none;
+			border-radius: 8px;
+			font-weight: 500;
+			transition: all 0.2s ease;
+			box-shadow: var(--shadow);
+		}
+
+		.quick-action-btn:hover {
+			transform: translateY(-2px);
+			box-shadow: var(--shadow-lg);
+		}
+
+		.quick-action-btn i {
+			font-size: 1rem;
+		}
+
+		/* Responsive Design */
+		@media (max-width: 1024px) {
+			.knowledge-base {
+				flex-direction: column;
+			}
+
+			.kb-sidebar {
+				width: 100%;
+				position: fixed;
+				top: 0;
+				left: -100%;
+				height: 100vh;
+				z-index: 1000;
+				transition: left 0.3s ease;
+			}
+
+			.kb-sidebar.open {
+				left: 0;
+			}
+
+			.kb-main {
+				margin-left: 0;
+			}
+
+			.articles-grid {
+				grid-template-columns: 1fr;
+			}
+		}
+
+		@media (max-width: 768px) {
+			.kb-header {
+				padding: 16px 20px;
+			}
+
+			.kb-title {
+				font-size: 1.75rem;
+			}
+
+			.kb-search-section {
+				padding: 24px 20px;
+			}
+
+			.kb-content {
+				padding: 24px 20px;
+			}
+
+			.article-modal {
+				padding: 20px;
+			}
+
+			.article-modal-content {
+				max-height: 90vh;
+			}
+
+			.article-modal-header {
+				padding: 16px 20px;
+			}
+
+			.article-modal-body {
+				padding: 16px 20px;
+			}
+
+			.quick-actions {
+				flex-direction: column;
+			}
+
+			.quick-action-btn {
+				justify-content: center;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div class="knowledge-base">
+		<!-- SIDEBAR (shared) -->
+		<aside class="sidebar">
+			<h2 class="logo">LiveSupport</h2>
+			<nav class="menu">
+				<a href="./dashboard.html"><svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 3H5c-1.1 0-2 .9-2 2v14l4-4h12c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg><span class="nav-label">Dashboard</span></a>
+				<a href="./menu.html"><svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 3h18v4H3zM3 9h18v12H3z"/></svg><span class="nav-label">Cyber Ops</span></a>
+				<a href="./tickets.html"><svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 7V4H4v3H2v10h18V7h-0zM6 6h12v2H6V6zm12 10H6v-6h12v6z"/></svg><span class="nav-label">Tickets</span></a>
+				<a href="./staff-performance.html" class=""><svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 9h3v11H5zM10 4h3v16h-3zM15 13h3v7h-3z"/></svg><span class="nav-label">Staff Performance</span></a>
+				<a href="./analytics.html" class="active"><svg  viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 17h2V9H3v8zm4 0h2V3H7v14zm4 0h2v-6h-2v6zm4 0h2v-9h-2v9z"/></svg><span class="nav-label">Analytics</span></a>
+				<a href="./knowledge.html"><svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7v6c0 5 4 9 10 9s10-4 10-9V7l-10-5zM12 4.4L18.6 8 12 11.6 5.4 8 12 4.4z"/></svg><span class="nav-label">Knowledge Base</span></a>
+				
+				<a href="./orders.html"><svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2S15.9 22 17 22s2-.9 2-2-.9-2-2-2zM7.16 14l.84-2h7.45l1.24 3H7.16zM7.6 6h10.8l-1.2 3H8.8L7.6 6z"/></svg><span class="nav-label">Orders</span></a>
+				<a href="./tracking.html"><svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm0-6c-6.6 0-12 5.4-12 12 0 3.6 1.6 6.8 4.2 9l.8-2.6C4.1 19.1 3 16.6 3 14 3 8.5 7.6 4 13 4s10 4.5 10 10c0 2.6-1.1 5.1-2.9 6.4L21 23c2.6-2.2 4-5.4 4-9 0-6.6-5.4-12-12-12z"/></svg><span class="nav-label">Tracking</span></a>
+				<a href="./instagram.html"><svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 6a5 5 0 100 10 5 5 0 000-10zm4-3a1 1 0 110 2 1 1 0 010-2z"/></svg><span class="nav-label">Instagram</span></a>
+				<a href="./settings.html"><svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.14 12.94a7.89 7.89 0 000-1.88l2.03-1.58-2-3.46-2.39.96a8.1 8.1 0 00-1.6-.93l-.36-2.5h-4l-.36 2.5c-.57.24-1.1.55-1.6.93L6.8 6.02l-2 3.46L6.83 11a7.89 7.89 0 000 1.88l-2.03 1.58 2 3.46 2.39-.96c.5.38 1.03.69 1.6.93l.36 2.5h4l.36-2.5c.57-.24 1.1-.55 1.6-.93l2.39.96 2-3.46-2.03-1.58zM12 15.5A3.5 3.5 0 1112 8.5a3.5 3.5 0 010 7z"/></svg><span class="nav-label">Settings</span></a>
+			</nav>
+		</aside>
+
+		<!-- KB-SIDEBAR (page-specific) -->
+		<aside class="kb-sidebar">
+			<div class="kb-sidebar-header">
+				<h2>LiveSupport</h2>
+				<p>Enterprise Knowledge Base</p>
+			</div>
+			
+			<nav class="kb-nav">
+				<div class="kb-nav-section">
+					<div class="kb-nav-title">Browse</div>
+					<a href="#all" class="kb-nav-item active" data-category="all">
+						<i class="fas fa-home"></i>
+						All Articles
+					</a>
+					<a href="#getting-started" class="kb-nav-item" data-category="getting-started">
+						<i class="fas fa-rocket"></i>
+						Getting Started
+					</a>
+					<a href="#tickets" class="kb-nav-item" data-category="tickets">
+						<i class="fas fa-ticket-alt"></i>
+						Ticket Management
+					</a>
+					<a href="#communication" class="kb-nav-item" data-category="communication">
+						<i class="fas fa-comments"></i>
+						Communication
+					</a>
+					<a href="#escalation" class="kb-nav-item" data-category="escalation">
+						<i class="fas fa-arrow-up"></i>
+						Escalation
+					</a>
+					<a href="#system" class="kb-nav-item" data-category="system">
+						<i class="fas fa-cogs"></i>
+						System & Tools
+					</a>
+					<a href="#analytics" class="kb-nav-item" data-category="analytics">
+						<i class="fas fa-chart-bar"></i>
+						Analytics
+					</a>
+					<a href="#best-practices" class="kb-nav-item" data-category="best-practices">
+						<i class="fas fa-star"></i>
+						Best Practices
+					</a>
+				</div>
+				
+				<div class="kb-nav-section">
+					<div class="kb-nav-title">Resources</div>
+					<a href="#faq" class="kb-nav-item" data-category="faq">
+						<i class="fas fa-question-circle"></i>
+						FAQ
+					</a>
+					<a href="#troubleshooting" class="kb-nav-item" data-category="troubleshooting">
+						<i class="fas fa-tools"></i>
+						Troubleshooting
+					</a>
+					<a href="#api-docs" class="kb-nav-item" data-category="api-docs">
+						<i class="fas fa-code"></i>
+						API Documentation
+					</a>
+				</div>
+			</nav>
+		</aside>
+
+		<!-- Main Content -->
+		<main class="kb-main">
+			<header class="topbar">
+			  <div class="branch">
+			      Branch: <strong class="branchjr">Ikeja Branch</strong>
+			  </div>
+			  <div class="top-right">
+			    <div class="profile">
+			      <button id="profileBtn" class="btn profile-btn" aria-haspopup="true" aria-expanded="false">
+			        <div class="profile-status-mini" id="profileStatusMini"><span class="status-dot-mini online"></span></div>
+			        <img class="avatar-sm-img" src="" alt="avatar" style="display:none" />
+			        <span class="avatar-sm">A</span>
+			      </button>
+			      <div id="profileDropdown" class="profile-dropdown" aria-hidden="true">
+			        <div class="profile-info"><strong id="profileName">Staff</strong></div>
+			        <div class="profile-status">
+			          <div class="status-header">
+			            <span class="status-label">Status</span>
+			            <div class="status-indicator" id="statusIndicator">
+			              <span class="status-dot online"></span>
+			              <span class="status-text">Online</span>
+			            </div>
+			          </div>
+			          <div class="status-toggle">
+			            <button class="status-btn online active" data-status="online"><span class="status-dot online"></span> Online</button>
+			            <button class="status-btn away" data-status="away"><span class="status-dot away"></span> Away</button>
+			            <button class="status-btn offline" data-status="offline"><span class="status-dot offline"></span> Offline</button>
+			          </div>
+			        </div>
+			        <div class="profile-session">
+			          <div class="session-header">Session Info</div>
+			          <div class="session-details">
+			            <div class="session-item"><span class="session-icon">🕐</span><span class="session-label">Logged in:</span><span class="session-value" id="loginTime">--:--</span></div>
+			            <div class="session-item"><span class="session-icon">⏱️</span><span class="session-label">Duration:</span><span class="session-value" id="sessionDuration">--:--</span></div>
+			            <div class="session-item"><span class="session-icon">⚡</span><span class="session-label">Last activity:</span><span class="session-value" id="lastActivity">--:--</span></div>
+			          </div>
+			        </div>
+			        <div class="profile-actions">
+			          <a id="profileSettings" class="profile-action" href="settings.html"><span class="profile-icon">⚙️</span> Settings</a>
+			          <button id="logoutBtn" class="profile-action"><span class="profile-icon">🚪</span> Logout</button>
+			        </div>
+			      </div>
+			    </div>
+			  </div>
+			</header>
+			<!-- Header -->
+			<header class="kb-header">
+				<div class="kb-header-content">
+					<h1 class="kb-title">Knowledge Base</h1>
+					<p class="kb-subtitle">Comprehensive guides and documentation for LiveSupport</p>
+					<div class="kb-stats">
+						<div class="kb-stat">
+							<i class="fas fa-file-alt"></i>
+							<span><strong>25</strong> Articles</span>
+						</div>
+						<div class="kb-stat">
+							<i class="fas fa-users"></i>
+							<span><strong>1,247</strong> Views this month</span>
+						</div>
+						<div class="kb-stat">
+							<i class="fas fa-clock"></i>
+							<span><strong>98%</strong> Helpfulness rating</span>
+						</div>
+					</div>
+				</div>
+			</header>
+
+			<!-- Search Section -->
+			<section class="kb-search-section">
+				<div class="kb-search-container">
+					<div class="kb-search-wrapper">
+						<i class="fas fa-search kb-search-icon"></i>
+						<input type="text" id="kbSearchInput" class="kb-search-input" placeholder="Search articles, guides, and documentation...">
+					</div>
+					<p class="kb-search-hint">Try searching for "ticket management" or "customer communication"</p>
+				</div>
+			</section>
+
+			<!-- Content Area -->
+			<div class="kb-content">
+				<!-- Quick Actions -->
+				<div class="quick-actions">
+					<button id="addArticleBtn" class="quick-action-btn">
+						<i class="fas fa-plus"></i>
+						Add Article
+					</button>
+					<a href="#contact-support" class="quick-action-btn">
+						<i class="fas fa-headset"></i>
+						Contact Support
+					</a>
+					<a href="#submit-feedback" class="quick-action-btn">
+						<i class="fas fa-star"></i>
+						Submit Feedback
+					</a>
+				</div>
+
+				<!-- Featured Articles -->
+				<section class="kb-section">
+					<h2 class="kb-section-title">
+						<i class="fas fa-star"></i>
+						Featured Articles
+					</h2>
+					<div class="articles-grid" id="featuredArticles">
+						<div class="article-card" data-article="ticket-handling" data-category="ticket-management">
+							<div class="article-icon">
+								<i class="fas fa-ticket-alt"></i>
+							</div>
+							<h3 class="article-title">How to Handle Tickets Effectively</h3>
+							<p class="article-description">Learn the best practices for managing customer support tickets from creation to resolution.</p>
+							<div class="article-meta">
+								<span class="article-category">Ticket Management</span>
+								<span class="article-views">
+									<i class="fas fa-eye"></i>
+									247 views
+								</span>
+							</div>
+						</div>
+
+						<div class="article-card" data-article="communication-skills" data-category="communication">
+							<div class="article-icon">
+								<i class="fas fa-comments"></i>
+							</div>
+							<h3 class="article-title">Communication Skills for Support Agents</h3>
+							<p class="article-description">Master the art of professional communication with customers and colleagues.</p>
+							<div class="article-meta">
+								<span class="article-category">Communication</span>
+								<span class="article-views">
+									<i class="fas fa-eye"></i>
+									189 views
+								</span>
+							</div>
+						</div>
+
+						<div class="article-card" data-article="escalation-process" data-category="escalation">
+							<div class="article-icon">
+								<i class="fas fa-arrow-up"></i>
+							</div>
+							<h3 class="article-title">Escalation Process in Customer Support</h3>
+							<p class="article-description">Understanding when and how to escalate complex issues to the appropriate teams.</p>
+							<div class="article-meta">
+								<span class="article-category">Escalation</span>
+								<span class="article-views">
+									<i class="fas fa-eye"></i>
+									156 views
+								</span>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<!-- All Articles -->
+				<section class="kb-section">
+					<h2 class="kb-section-title">
+						<i class="fas fa-list"></i>
+						All Articles
+					</h2>
+					<div class="articles-grid" id="allArticles">
+						<!-- Articles will be populated by JavaScript -->
+					</div>
+					<div class="no-results" id="noResults" style="display:none; text-align:center; padding:40px 0; color: var(--text-secondary);">
+						No articles matched your query. Try another search term or category.
+					</div>
+				</section>
+	</div>
+</main>
+
+	<!-- Article Modal -->
+	<div class="article-modal" id="articleModal">
+		<div class="article-modal-content">
+			<div class="article-modal-header">
+				<h2 class="article-modal-title" id="modalTitle"></h2>
+				<button class="article-modal-close" id="modalClose">&times;</button>
+			</div>
+			<div class="article-modal-body">
+				<div class="article-content" id="modalContent">
+					<!-- Article content will be loaded here -->
+				</div>
+				<div class="article-actions">
+					<button class="article-action-btn" id="helpfulBtn">
+						<i class="fas fa-thumbs-up"></i>
+						Helpful
+					</button>
+					<button class="article-action-btn" id="shareBtn">
+						<i class="fas fa-share"></i>
+						Share
+					</button>
+					<button class="article-action-btn" id="printBtn">
+						<i class="fas fa-print"></i>
+						Print
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Add Article Modal -->
+	<div class="add-article-modal" id="addArticleModal">
+		<div class="add-article-modal-content">
+			<div class="add-article-modal-header">
+				<h2 class="add-article-modal-title">
+					<i class="fas fa-plus-circle"></i>
+					Add New Article
+				</h2>
+				<button class="add-article-modal-close" id="addArticleModalClose">&times;</button>
+			</div>
+			<div class="add-article-modal-body">
+				<form id="addArticleForm" class="add-article-form">
+					<div class="form-group">
+						<label for="articleTitle" class="form-label">
+							<i class="fas fa-heading"></i>
+							Article Title
+						</label>
+						<input type="text" id="articleTitle" class="form-input" placeholder="Enter article title..." required>
+					</div>
+					
+					<div class="form-group">
+						<label for="articleCategory" class="form-label">
+							<i class="fas fa-tag"></i>
+							Category
+						</label>
+						<select id="articleCategory" class="form-select" required>
+							<option value="">Select a category...</option>
+							<option value="getting-started">Getting Started</option>
+							<option value="ticket-management">Ticket Management</option>
+							<option value="communication">Communication</option>
+							<option value="escalation">Escalation</option>
+							<option value="system">System & Tools</option>
+							<option value="analytics">Analytics</option>
+							<option value="best-practices">Best Practices</option>
+							<option value="faq">FAQ</option>
+							<option value="troubleshooting">Troubleshooting</option>
+							<option value="api-docs">API Documentation</option>
+						</select>
+					</div>
+					
+					<div class="form-group">
+						<label for="articleContent" class="form-label">
+							<i class="fas fa-edit"></i>
+							Article Content
+						</label>
+						<div class="editor-toolbar">
+							<button type="button" class="toolbar-btn" data-command="bold" title="Bold">
+								<i class="fas fa-bold"></i>
+							</button>
+							<button type="button" class="toolbar-btn" data-command="italic" title="Italic">
+								<i class="fas fa-italic"></i>
+							</button>
+							<button type="button" class="toolbar-btn" data-command="underline" title="Underline">
+								<i class="fas fa-underline"></i>
+							</button>
+							<span class="toolbar-separator"></span>
+							<button type="button" class="toolbar-btn" data-command="insertUnorderedList" title="Bullet List">
+								<i class="fas fa-list-ul"></i>
+							</button>
+							<button type="button" class="toolbar-btn" data-command="insertOrderedList" title="Numbered List">
+								<i class="fas fa-list-ol"></i>
+							</button>
+							<span class="toolbar-separator"></span>
+							<button type="button" class="toolbar-btn" data-command="createLink" title="Insert Link">
+								<i class="fas fa-link"></i>
+							</button>
+							<button type="button" class="toolbar-btn" data-command="unlink" title="Remove Link">
+								<i class="fas fa-unlink"></i>
+							</button>
+						</div>
+						<div class="editor-container">
+							<div id="articleContent" class="form-editor" contenteditable="true" placeholder="Write your article content here..."></div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="form-label">
+							<i class="fas fa-tags"></i>
+							Tags (optional)
+						</label>
+						<input type="text" id="articleTags" class="form-input" placeholder="Enter tags separated by commas...">
+						<small class="form-hint">Separate multiple tags with commas (e.g., tutorial, guide, tips)</small>
+					</div>
+					
+					<div class="form-actions">
+						<button type="button" class="btn-secondary" id="cancelAddArticle">
+							<i class="fas fa-times"></i>
+							Cancel
+						</button>
+						<button type="submit" class="btn-primary">
+							<i class="fas fa-save"></i>
+							Create Article
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		// Article data
+		const articles = {
+			'ticket-handling': {
+				title: 'How to Handle Tickets Effectively',
+				category: 'Ticket Management',
+				content: `
+					<p>Effective ticket handling is crucial for maintaining high customer satisfaction and operational efficiency. This comprehensive guide covers the entire ticket lifecycle from creation to resolution.</p>
+					
+					<h3>Ticket Creation Process</h3>
+					<p>When a customer submits a ticket, ensure all necessary information is captured:</p>
+					<ul>
+						<li>Customer contact information</li>
+						<li>Detailed description of the issue</li>
+						<li>Priority level assessment</li>
+						<li>Relevant attachments or screenshots</li>
+					</ul>
+					
+					<h3>Initial Assessment</h3>
+					<p>Within the first hour of ticket creation:</p>
+					<ul>
+						<li>Acknowledge receipt to the customer</li>
+						<li>Assess urgency and priority</li>
+						<li>Assign to appropriate agent or team</li>
+						<li>Set realistic response time expectations</li>
+					</ul>
+					
+					<h3>Investigation and Resolution</h3>
+					<p>Follow these steps for systematic problem-solving:</p>
+					<ol>
+						<li>Gather all relevant information</li>
+						<li>Reproduce the issue if possible</li>
+						<li>Consult knowledge base and previous solutions</li>
+						<li>Implement and test the solution</li>
+						<li>Document the resolution process</li>
+					</ol>
+					
+					<h3>Communication Best Practices</h3>
+					<p>Maintain clear, professional communication throughout:</p>
+					<ul>
+						<li>Provide regular status updates</li>
+						<li>Use clear, jargon-free language</li>
+						<li>Be honest about timelines and expectations</li>
+						<li>Follow up after resolution</li>
+					</ul>
+				`
+			},
+			'communication-skills': {
+				title: 'Communication Skills for Support Agents',
+				category: 'Communication',
+				content: `
+					<p>Effective communication is the foundation of excellent customer support. This guide explores the key communication skills that every support agent should master.</p>
+					
+					<h3>Active Listening</h3>
+					<p>Active listening involves fully concentrating on the customer's message:</p>
+					<ul>
+						<li>Give your full attention</li>
+						<li>Avoid interrupting</li>
+						<li>Ask clarifying questions</li>
+						<li>Paraphrase to confirm understanding</li>
+					</ul>
+					
+					<h3>Empathy and Emotional Intelligence</h3>
+					<p>Understanding and relating to customer emotions:</p>
+					<ul>
+						<li>Acknowledge feelings</li>
+						<li>Show genuine concern</li>
+						<li>Avoid dismissive responses</li>
+						<li>Use empathetic language</li>
+					</ul>
+					
+					<h3>Clear and Concise Communication</h3>
+					<p>Express ideas clearly and efficiently:</p>
+					<ul>
+						<li>Use simple language</li>
+						<li>Structure responses logically</li>
+						<li>Avoid technical jargon</li>
+						<li>Be direct but polite</li>
+					</ul>
+					
+					<h3>Written Communication Excellence</h3>
+					<p>Best practices for written responses:</p>
+					<ul>
+						<li>Use proper grammar and spelling</li>
+						<li>Maintain professional tone</li>
+						<li>Structure emails clearly</li>
+						<li>Proofread before sending</li>
+					</ul>
+				`
+			},
+			'escalation-process': {
+				title: 'Escalation Process in Customer Support',
+				category: 'Escalation',
+				content: `
+					<p>Knowing when and how to escalate issues is crucial for maintaining service quality and customer satisfaction. This guide outlines the escalation procedures and best practices.</p>
+					
+					<h3>When to Escalate</h3>
+					<p>Escalation should occur when:</p>
+					<ul>
+						<li>The issue exceeds your expertise level</li>
+						<li>Resolution requires higher authority</li>
+						<li>Customer satisfaction is at risk</li>
+						<li>Issue involves system-wide problems</li>
+						<li>Legal or compliance concerns arise</li>
+					</ul>
+					
+					<h3>Escalation Levels</h3>
+					<p>Understanding the escalation hierarchy:</p>
+					<ol>
+						<li><strong>Level 1:</strong> Front-line support agents</li>
+						<li><strong>Level 2:</strong> Specialized technical support</li>
+						<li><strong>Level 3:</strong> Senior technicians or developers</li>
+						<li><strong>Level 4:</strong> Management or executive team</li>
+					</ol>
+					
+					<h3>Escalation Procedure</h3>
+					<p>Follow these steps for proper escalation:</p>
+					<ol>
+						<li>Document all troubleshooting steps taken</li>
+						<li>Gather all relevant information and logs</li>
+						<li>Inform the customer of the escalation</li>
+						<li>Transfer to appropriate team with context</li>
+						<li>Follow up on escalated tickets</li>
+					</ol>
+					
+					<h3>Communication During Escalation</h3>
+					<p>Maintain transparency with customers:</p>
+					<ul>
+						<li>Explain why escalation is necessary</li>
+						<li>Provide expected timelines</li>
+						<li>Offer alternative contact methods if needed</li>
+						<li>Keep customers updated on progress</li>
+					</ul>
+				`
+			},
+			'getting-started-guide': {
+				title: 'Getting Started with LiveSupport',
+				category: 'Getting Started',
+				content: `
+					<p>Welcome to LiveSupport! This comprehensive guide will help you get up and running with our customer support platform quickly and efficiently.</p>
+					
+					<h3>Account Setup</h3>
+					<p>Begin by creating your account and configuring your profile:</p>
+					<ul>
+						<li>Complete your profile information</li>
+						<li>Set up your notification preferences</li>
+						<li>Configure your availability status</li>
+						<li>Review and accept team policies</li>
+					</ul>
+					
+					<h3>Navigation Overview</h3>
+					<p>Familiarize yourself with the main interface:</p>
+					<ul>
+						<li><strong>Dashboard:</strong> Overview of your tickets and performance</li>
+						<li><strong>Inbox:</strong> Active conversations and tickets</li>
+						<li><strong>Analytics:</strong> Reports and insights</li>
+						<li><strong>Settings:</strong> Personal and team configurations</li>
+					</ul>
+					
+					<h3>Your First Ticket</h3>
+					<p>Learn the basics of handling customer inquiries:</p>
+					<ol>
+						<li>Review the ticket details and customer information</li>
+						<li>Assess the priority and urgency</li>
+						<li>Research similar past issues</li>
+						<li>Craft a helpful, professional response</li>
+						<li>Update the ticket status appropriately</li>
+					</ol>
+					
+					<h3>Essential Tools</h3>
+					<p>Make use of these key features:</p>
+					<ul>
+						<li>Canned responses for common questions</li>
+						<li>Internal notes for team collaboration</li>
+						<li>Customer history and context</li>
+						<li>Knowledge base integration</li>
+					</ul>
+				`
+			},
+			'system-administration': {
+				title: 'System Administration Guide',
+				category: 'System',
+				content: `
+					<p>This guide covers essential system administration tasks for maintaining and optimizing your LiveSupport environment.</p>
+					
+					<h3>User Management</h3>
+					<p>Learn to manage team members and permissions:</p>
+					<ul>
+						<li>Creating and deactivating user accounts</li>
+						<li>Assigning roles and permissions</li>
+						<li>Managing team hierarchies</li>
+						<li>Bulk user operations</li>
+					</ul>
+					
+					<h3>System Configuration</h3>
+					<p>Configure system-wide settings:</p>
+					<ul>
+						<li>Business hours and holidays</li>
+						<li>Automated routing rules</li>
+						<li>SLA policies and targets</li>
+						<li>Integration settings</li>
+					</ul>
+					
+					<h3>Performance Optimization</h3>
+					<p>Keep your system running smoothly:</p>
+					<ul>
+						<li>Database maintenance and cleanup</li>
+						<li>Cache management</li>
+						<li>Log rotation and monitoring</li>
+						<li>Resource usage optimization</li>
+					</ul>
+					
+					<h3>Backup and Recovery</h3>
+					<p>Ensure data safety and business continuity:</p>
+					<ul>
+						<li>Automated backup schedules</li>
+						<li>Disaster recovery procedures</li>
+						<li>Data export and migration</li>
+						<li>System restoration processes</li>
+					</ul>
+				`
+			},
+			'analytics-dashboard': {
+				title: 'Understanding Analytics and Reporting',
+				category: 'Analytics',
+				content: `
+					<p>Make data-driven decisions with LiveSupport's comprehensive analytics and reporting capabilities.</p>
+					
+					<h3>Key Performance Indicators</h3>
+					<p>Track the metrics that matter most:</p>
+					<ul>
+						<li><strong>Response Time:</strong> Average time to first response</li>
+						<li><strong>Resolution Time:</strong> Average time to ticket closure</li>
+						<li><strong>Customer Satisfaction:</strong> CSAT scores and feedback</li>
+						<li><strong>Agent Productivity:</strong> Tickets handled per agent</li>
+					</ul>
+					
+					<h3>Dashboard Overview</h3>
+					<p>Navigate the analytics interface:</p>
+					<ul>
+						<li>Real-time performance metrics</li>
+						<li>Historical trend analysis</li>
+						<li>Custom date range selection</li>
+						<li>Export capabilities for external reporting</li>
+					</ul>
+					
+					<h3>Advanced Analytics</h3>
+					<p>Dive deeper into your data:</p>
+					<ul>
+						<li>Customer segmentation analysis</li>
+						<li>Peak hours and workload patterns</li>
+						<li>Common issue identification</li>
+						<li>Agent performance comparisons</li>
+					</ul>
+					
+					<h3>Creating Custom Reports</h3>
+					<p>Build reports tailored to your needs:</p>
+					<ol>
+						<li>Select relevant metrics and dimensions</li>
+						<li>Apply filters and date ranges</li>
+						<li>Choose visualization types</li>
+						<li>Schedule automated report delivery</li>
+					</ol>
+				`
+			},
+			'best-practices-support': {
+				title: 'Best Practices for Customer Support',
+				category: 'Best Practices',
+				content: `
+					<p>Excellence in customer support requires consistent application of proven best practices and methodologies.</p>
+					
+					<h3>Customer-Centric Approach</h3>
+					<p>Always prioritize the customer experience:</p>
+					<ul>
+						<li>Listen actively to customer needs</li>
+						<li>Empathize with their situation</li>
+						<li>Provide personalized solutions</li>
+						<li>Follow up proactively</li>
+					</ul>
+					
+					<h3>Quality Assurance</h3>
+					<p>Maintain high standards across all interactions:</p>
+					<ul>
+						<li>Regular quality reviews</li>
+						<li>Consistent response templates</li>
+						<li>Grammar and tone guidelines</li>
+						<li>Continuous training programs</li>
+					</ul>
+					
+					<h3>Efficiency Optimization</h3>
+					<p>Work smarter, not harder:</p>
+					<ul>
+						<li>Utilize automation where appropriate</li>
+						<li>Maintain comprehensive documentation</li>
+						<li>Share knowledge across teams</li>
+						<li>Implement feedback loops</li>
+					</ul>
+					
+					<h3>Professional Development</h3>
+					<p>Continuous improvement is key:</p>
+					<ul>
+						<li>Regular skill assessments</li>
+						<li>Mentorship programs</li>
+						<li>Cross-training opportunities</li>
+						<li>Industry certification pursuit</li>
+					</ul>
+				`
+			},
+			'troubleshooting-guide': {
+				title: 'Common Issues and Troubleshooting',
+				category: 'Troubleshooting',
+				content: `
+					<p>This guide addresses the most common technical issues and provides step-by-step troubleshooting procedures.</p>
+					
+					<h3>Login and Access Issues</h3>
+					<p>Resolve authentication and access problems:</p>
+					<ul>
+						<li><strong>Password Reset:</strong> Use the forgot password link</li>
+						<li><strong>Account Lockout:</strong> Contact administrator for unlock</li>
+						<li><strong>Two-Factor Authentication:</strong> Verify device and backup codes</li>
+						<li><strong>Browser Compatibility:</strong> Ensure supported browser version</li>
+					</ul>
+					
+					<h3>Ticket Management Problems</h3>
+					<p>Fix issues with ticket handling:</p>
+					<ul>
+						<li><strong>Missing Tickets:</strong> Check filters and search criteria</li>
+						<li><strong>Assignment Issues:</strong> Verify permissions and team membership</li>
+						<li><strong>Status Updates:</strong> Ensure proper workflow configuration</li>
+						<li><strong>Attachment Problems:</strong> Check file size and format restrictions</li>
+					</ul>
+					
+					<h3>Performance Issues</h3>
+					<p>Address system slowdowns and errors:</p>
+					<ul>
+						<li><strong>Slow Loading:</strong> Clear browser cache and cookies</li>
+						<li><strong>Timeout Errors:</strong> Check network connectivity</li>
+						<li><strong>Memory Issues:</strong> Close unnecessary browser tabs</li>
+						<li><strong>Database Errors:</strong> Contact system administrator</li>
+					</ul>
+					
+					<h3>Integration Problems</h3>
+					<p>Resolve third-party integration issues:</p>
+					<ul>
+						<li><strong>API Failures:</strong> Verify API keys and endpoints</li>
+						<li><strong>Webhook Issues:</strong> Check webhook URLs and authentication</li>
+						<li><strong>Data Sync Problems:</strong> Review sync schedules and error logs</li>
+						<li><strong>Permission Errors:</strong> Confirm API permissions and scopes</li>
+					</ul>
+				`
+			},
+			'api-documentation': {
+				title: 'API Documentation and Integration',
+				category: 'API Docs',
+				content: `
+					<p>Integrate LiveSupport with your existing systems using our comprehensive REST API.</p>
+					
+					<h3>Authentication</h3>
+					<p>Secure access to the API:</p>
+					<ul>
+						<li><strong>API Keys:</strong> Generate and manage API keys in settings</li>
+						<li><strong>OAuth 2.0:</strong> Implement OAuth flow for user authentication</li>
+						<li><strong>JWT Tokens:</strong> Use JWT for stateless authentication</li>
+						<li><strong>Rate Limiting:</strong> Respect API rate limits to avoid throttling</li>
+					</ul>
+					
+					<h3>Core Endpoints</h3>
+					<p>Essential API operations:</p>
+					<ul>
+						<li><strong>Tickets:</strong> Create, read, update, and delete tickets</li>
+						<li><strong>Customers:</strong> Manage customer profiles and information</li>
+						<li><strong>Agents:</strong> Access agent data and assignments</li>
+						<li><strong>Messages:</strong> Send and retrieve conversation history</li>
+					</ul>
+					
+					<h3>Webhooks</h3>
+					<p>Real-time event notifications:</p>
+					<ul>
+						<li><strong>Ticket Events:</strong> Created, updated, closed</li>
+						<li><strong>Message Events:</strong> New messages and replies</li>
+						<li><strong>Agent Events:</strong> Status changes and assignments</li>
+						<li><strong>System Events:</strong> Maintenance and updates</li>
+					</ul>
+					
+					<h3>SDKs and Libraries</h3>
+					<p>Accelerate development with our SDKs:</p>
+					<ul>
+						<li><strong>JavaScript SDK:</strong> For web applications</li>
+						<li><strong>Python SDK:</strong> For backend integrations</li>
+						<li><strong>PHP SDK:</strong> For CMS integrations</li>
+						<li><strong>Postman Collection:</strong> For API testing and exploration</li>
+					</ul>
+				`
+			},
+			'faq-customer-support': {
+				title: 'Frequently Asked Questions',
+				category: 'FAQ',
+				content: `
+					<p>Find answers to the most common questions about LiveSupport and customer support best practices.</p>
+					
+					<h3>Getting Started</h3>
+					<dl>
+						<dt>How do I create my first ticket?</dt>
+						<dd>Navigate to the Inbox section and click "New Ticket". Fill in the customer details and issue description.</dd>
+						
+						<dt>What are the different ticket priorities?</dt>
+						<dd>Low, Normal, High, and Urgent. Use Urgent only for critical system outages or security issues.</dd>
+						
+						<dt>How do I assign tickets to team members?</dt>
+						<dd>Click on a ticket, then use the assignee dropdown in the ticket details panel.</dd>
+					</dl>
+					
+					<h3>Features and Functionality</h3>
+					<dl>
+						<dt>Can I use canned responses?</dt>
+						<dd>Yes, create and manage canned responses in Settings > Canned Responses for quick replies.</dd>
+						
+						<dt>How do I set up automated routing?</dt>
+						<dd>Configure routing rules in Settings > Automation based on keywords, customer type, or priority.</dd>
+						
+						<dt>Is there a mobile app?</dt>
+						<dd>Yes, LiveSupport offers native iOS and Android apps with full functionality.</dd>
+					</dl>
+					
+					<h3>Troubleshooting</h3>
+					<dl>
+						<dt>Why can't I see certain tickets?</dt>
+						<dd>Check your permissions and ensure you're viewing the correct team or personal assignments.</dd>
+						
+						<dt>How do I reset my password?</dt>
+						<dd>Use the "Forgot Password" link on the login page or contact your administrator.</dd>
+						
+						<dt>Why are my notifications not working?</dt>
+						<dd>Verify your notification settings and browser permissions for push notifications.</dd>
+					</dl>
+					
+					<h3>Best Practices</h3>
+					<dl>
+						<dt>What's the ideal response time?</dt>
+						<dd>Aim for responses within 2 hours for normal priority tickets, 30 minutes for high priority.</dd>
+						
+						<dt>How should I handle angry customers?</dt>
+						<dd>Stay calm, listen actively, acknowledge their frustration, and focus on solutions.</dd>
+						
+						<dt>When should I escalate a ticket?</dt>
+						<dd>Escalate when the issue requires specialized knowledge or when customer satisfaction is at risk.</dd>
+					</dl>
+				`
+			},
+			'ticket-prioritization': {
+				title: 'Ticket Prioritization and SLA Management',
+				category: 'Ticket Management',
+				content: `
+					<p>Effective ticket prioritization ensures that critical issues are addressed promptly while maintaining overall service quality.</p>
+					
+					<h3>Priority Levels</h3>
+					<p>Understanding priority classification:</p>
+					<ul>
+						<li><strong>Urgent:</strong> Critical system outages, security breaches, immediate business impact</li>
+						<li><strong>High:</strong> Major functionality issues, significant customer impact</li>
+						<li><strong>Normal:</strong> Standard support requests, feature questions</li>
+						<li><strong>Low:</strong> General inquiries, minor suggestions, documentation requests</li>
+					</ul>
+					
+					<h3>SLA Configuration</h3>
+					<p>Setting up Service Level Agreements:</p>
+					<ul>
+						<li>Define response time targets by priority</li>
+						<li>Configure resolution time goals</li>
+						<li>Set up automated SLA breach notifications</li>
+						<li>Establish escalation procedures for SLA violations</li>
+					</ul>
+					
+					<h3>Automated Prioritization</h3>
+					<p>Leverage automation for consistent prioritization:</p>
+					<ul>
+						<li>Keyword-based priority assignment</li>
+						<li>Customer segment-based prioritization</li>
+						<li>Time-based priority escalation</li>
+						<li>Integration with external monitoring systems</li>
+					</ul>
+					
+					<h3>SLA Monitoring and Reporting</h3>
+					<p>Track and improve SLA performance:</p>
+					<ul>
+						<li>Real-time SLA status dashboards</li>
+						<li>Historical SLA compliance reports</li>
+						<li>SLA breach analysis and root cause identification</li>
+						<li>Continuous improvement initiatives</li>
+					</ul>
+				`
+			},
+			'customer-feedback': {
+				title: 'Managing Customer Feedback and Surveys',
+				category: 'Communication',
+				content: `
+					<p>Customer feedback is essential for continuous improvement. Learn how to collect, analyze, and act on customer insights.</p>
+					
+					<h3>Feedback Collection Methods</h3>
+					<p>Diverse ways to gather customer opinions:</p>
+					<ul>
+						<li><strong>Post-Resolution Surveys:</strong> Automated CSAT surveys after ticket closure</li>
+						<li><strong>Proactive Feedback:</strong> Periodic check-ins during long interactions</li>
+						<li><strong>Net Promoter Score (NPS):</strong> Measure customer loyalty and likelihood to recommend</li>
+						<li><strong>Custom Surveys:</strong> Targeted surveys for specific products or services</li>
+					</ul>
+					
+					<h3>Survey Design Best Practices</h3>
+					<p>Create effective feedback instruments:</p>
+					<ul>
+						<li>Use clear, concise questions</li>
+						<li>Include both quantitative and qualitative questions</li>
+						<li>Keep surveys short (3-5 questions maximum)</li>
+						<li>Test surveys for clarity and bias</li>
+					</ul>
+					
+					<h3>Feedback Analysis</h3>
+					<p>Extract actionable insights from responses:</p>
+					<ul>
+						<li>Identify trends and patterns</li>
+						<li>Categorize feedback by theme</li>
+						<li>Calculate key metrics (CSAT, NPS)</li>
+						<li>Compare performance across teams and time periods</li>
+					</ul>
+					
+					<h3>Acting on Feedback</h3>
+					<p>Close the feedback loop:</p>
+					<ul>
+						<li>Share insights with relevant teams</li>
+						<li>Implement improvement initiatives</li>
+						<li>Communicate changes back to customers</li>
+						<li>Track the impact of feedback-driven changes</li>
+					</ul>
+				`
+			},
+			'team-collaboration': {
+				title: 'Team Collaboration and Internal Communication',
+				category: 'Best Practices',
+				content: `
+					<p>Effective internal communication and collaboration are crucial for delivering exceptional customer support.</p>
+					
+					<h3>Internal Communication Channels</h3>
+					<p>Choose the right tools for different communication needs:</p>
+					<ul>
+						<li><strong>Real-time Chat:</strong> For urgent questions and quick coordination</li>
+						<li><strong>Team Inbox:</strong> For ticket handoffs and shared ownership</li>
+						<li><strong>Knowledge Base:</strong> For sharing solutions and best practices</li>
+						<li><strong>Regular Meetings:</strong> For alignment and strategic discussions</li>
+					</ul>
+					
+					<h3>Ticket Handoffs</h3>
+					<p>Ensure smooth transitions between team members:</p>
+					<ul>
+						<li>Document all troubleshooting steps taken</li>
+						<li>Include relevant customer context</li>
+						<li>Highlight next steps and priorities</li>
+						<li>Use internal notes for additional context</li>
+					</ul>
+					
+					<h3>Knowledge Sharing</h3>
+					<p>Build a culture of continuous learning:</p>
+					<ul>
+						<li>Document solutions in the knowledge base</li>
+						<li>Share complex case studies with the team</li>
+						<li>Create and maintain troubleshooting guides</li>
+						<li>Conduct regular training sessions</li>
+					</ul>
+					
+					<h3>Conflict Resolution</h3>
+					<p>Handle internal disagreements constructively:</p>
+					<ul>
+						<li>Focus on customer impact, not personal opinions</li>
+						<li>Use data to support decisions</li>
+						<li>Escalate to management when needed</li>
+						<li>Learn from disagreements to improve processes</li>
+					</ul>
+				`
+			},
+			'multichannel-support': {
+				title: 'Multichannel Support Management',
+				category: 'Communication',
+				content: `
+					<p>Modern customers expect support across multiple channels. Learn how to manage conversations consistently across all touchpoints.</p>
+					
+					<h3>Supported Channels</h3>
+					<p>Master communication across different platforms:</p>
+					<ul>
+						<li><strong>Email:</strong> Professional, documented communication</li>
+						<li><strong>Live Chat:</strong> Real-time support with instant responses</li>
+						<li><strong>Social Media:</strong> Public conversations requiring brand consistency</li>
+						<li><strong>Phone:</strong> Personal connection with tone and active listening</li>
+						<li><strong>Self-Service:</strong> Knowledge base and FAQ accessibility</li>
+					</ul>
+					
+					<h3>Channel Selection Strategy</h3>
+					<p>Choose the right channel for different scenarios:</p>
+					<ul>
+						<li><strong>Complex Issues:</strong> Phone or email for detailed explanations</li>
+						<li><strong>Quick Questions:</strong> Live chat for immediate resolution</li>
+						<li><strong>Public Complaints:</strong> Private channels to maintain professionalism</li>
+						<li><strong>Documentation Requests:</strong> Self-service portals</li>
+					</ul>
+					
+					<h3>Consistent Experience</h3>
+					<p>Maintain brand voice across all channels:</p>
+					<ul>
+						<li>Unified response templates</li>
+						<li>Shared knowledge base access</li>
+						<li>Cross-channel customer history</li>
+						<li>Consistent branding and tone</li>
+					</ul>
+					
+					<h3>Channel Analytics</h3>
+					<p>Track performance by communication method:</p>
+					<ul>
+						<li>Response time by channel</li>
+						<li>Customer satisfaction scores</li>
+						<li>Resolution rates and efficiency</li>
+						<li>Channel preference trends</li>
+					</ul>
+				`
+			},
+			'performance-monitoring': {
+				title: 'Agent Performance Monitoring and Coaching',
+				category: 'Analytics',
+				content: `
+					<p>Effective performance monitoring helps agents improve while maintaining high service standards.</p>
+					
+					<h3>Key Performance Metrics</h3>
+					<p>Track the metrics that drive success:</p>
+					<ul>
+						<li><strong>Response Time:</strong> Speed of initial and follow-up responses</li>
+						<li><strong>Resolution Rate:</strong> Percentage of tickets resolved without escalation</li>
+						<li><strong>Customer Satisfaction:</strong> CSAT and NPS scores</li>
+						<li><strong>Quality Scores:</strong> Based on call monitoring and reviews</li>
+					</ul>
+					
+					<h3>Monitoring Methods</h3>
+					<p>Different approaches to performance evaluation:</p>
+					<ul>
+						<li><strong>Automated Metrics:</strong> System-tracked KPIs</li>
+						<li><strong>Call Monitoring:</strong> Live and recorded conversation reviews</li>
+						<li><strong>Customer Feedback:</strong> Direct input from end users</li>
+						<li><strong>Peer Reviews:</strong> Team member evaluations</li>
+					</ul>
+					
+					<h3>Coaching and Development</h3>
+					<p>Support agent growth and improvement:</p>
+					<ul>
+						<li>Regular performance reviews</li>
+						<li>Individual development plans</li>
+						<li>Training opportunities</li>
+						<li>Mentorship programs</li>
+					</ul>
+					
+					<h3>Motivation and Retention</h3>
+					<p>Keep agents engaged and committed:</p>
+					<ul>
+						<li>Recognition programs</li>
+						<li>Career development paths</li>
+						<li>Work-life balance support</li>
+						<li>Competitive compensation</li>
+					</ul>
+				`
+			},
+			'data-security-privacy': {
+				title: 'Data Security and Privacy Compliance',
+				category: 'System',
+				content: `
+					<p>Protecting customer data and maintaining compliance with privacy regulations is fundamental to customer trust and legal requirements.</p>
+					
+					<h3>Data Protection Principles</h3>
+					<p>Core principles for secure data handling:</p>
+					<ul>
+						<li><strong>Minimize Collection:</strong> Only collect necessary customer data</li>
+						<li><strong>Purpose Limitation:</strong> Use data only for stated purposes</li>
+						<li><strong>Data Accuracy:</strong> Maintain current and accurate information</li>
+						<li><strong>Storage Limitation:</strong> Retain data only as long as needed</li>
+					</ul>
+					
+					<h3>Compliance Requirements</h3>
+					<p>Key regulations and standards:</p>
+					<ul>
+						<li><strong>GDPR:</strong> EU General Data Protection Regulation</li>
+						<li><strong>CCPA:</strong> California Consumer Privacy Act</li>
+						<li><strong>HIPAA:</strong> Health Insurance Portability and Accountability Act</li>
+						<li><strong>PCI DSS:</strong> Payment Card Industry Data Security Standard</li>
+					</ul>
+					
+					<h3>Security Best Practices</h3>
+					<p>Technical and procedural safeguards:</p>
+					<ul>
+						<li>Encryption of sensitive data</li>
+						<li>Multi-factor authentication</li>
+						<li>Regular security audits</li>
+						<li>Incident response procedures</li>
+					</ul>
+					
+					<h3>Privacy by Design</h3>
+					<p>Build privacy into system architecture:</p>
+					<ul>
+						<li>Data minimization from the start</li>
+						<li>Privacy impact assessments</li>
+						<li>User consent management</li>
+						<li>Data subject rights implementation</li>
+					</ul>
+				`
+			},
+			'automation-workflows': {
+				title: 'Automation and Workflow Optimization',
+				category: 'System',
+				content: `
+					<p>Leverage automation to improve efficiency, reduce response times, and enhance customer experience.</p>
+					
+					<h3>Types of Automation</h3>
+					<p>Different automation approaches for support:</p>
+					<ul>
+						<li><strong>Ticket Routing:</strong> Automatic assignment based on rules</li>
+						<li><strong>Canned Responses:</strong> Pre-written reply templates</li>
+						<li><strong>Follow-up Automation:</strong> Scheduled check-ins and updates</li>
+						<li><strong>Escalation Rules:</strong> Automatic priority increases</li>
+					</ul>
+					
+					<h3>Workflow Design</h3>
+					<p>Create efficient support processes:</p>
+					<ul>
+						<li>Map current workflows</li>
+						<li>Identify automation opportunities</li>
+						<li>Test automated processes</li>
+						<li>Monitor and optimize performance</li>
+					</ul>
+					
+					<h3>Integration Capabilities</h3>
+					<p>Connect with external systems:</p>
+					<ul>
+						<li>CRM system integration</li>
+						<li>Help desk software connections</li>
+						<li>E-commerce platform links</li>
+						<li>Communication tool integrations</li>
+					</ul>
+					
+					<h3>Measuring Automation Success</h3>
+					<p>Track the impact of automation:</p>
+					<ul>
+						<li>Response time improvements</li>
+						<li>Agent productivity gains</li>
+						<li>Customer satisfaction changes</li>
+						<li>Cost reduction metrics</li>
+					</ul>
+				`
+			},
+
+			// Additional new articles added across categories
+			'knowledge-base-curation': {
+				title: 'Knowledge Base Curation and Maintenance',
+				category: 'Best Practices',
+				content: `
+					<p>Keep the knowledge base accurate and discoverable through regular curation and governance.</p>
+					<ul>
+						<li>Review articles quarterly for accuracy</li>
+						<li>Tag content with clear categories and keywords</li>
+						<li>Retire or archive outdated articles</li>
+						<li>Encourage agent contributions and peer review</li>
+					</ul>
+				`
+			},
+
+			'omnichannel-routing': {
+				title: 'Omnichannel Routing Strategies',
+				category: 'System',
+				content: `
+					<p>Design routing logic that unifies conversations across channels while preserving context.</p>
+					<ul>
+						<li>Use unified customer IDs to merge histories</li>
+						<li>Prioritize channels based on SLAs and urgency</li>
+						<li>Employ fallback rules when agents are unavailable</li>
+						<li>Measure channel-specific performance</li>
+					</ul>
+				`
+			},
+
+			'chatbot-configuration': {
+				title: 'Chatbot Configuration and Handoff',
+				category: 'System',
+				content: `
+					<p>Configure chatbots to handle common queries and hand off gracefully to human agents when needed.</p>
+					<ul>
+						<li>Define clear intents and example utterances</li>
+						<li>Provide contextual prompts for the bot</li>
+						<li>Use confidence thresholds to trigger handoff</li>
+						<li>Log interactions for continuous improvement</li>
+					</ul>
+				`
+			},
+
+			'onboarding-new-agents': {
+				title: 'Onboarding New Support Agents',
+				category: 'Getting Started',
+				content: `
+					<p>A structured onboarding program helps new agents become productive faster and reduces onboarding time.</p>
+					<ul>
+						<li>Provide role-specific training and shadowing</li>
+						<li>Give hands-on exercises with sample tickets</li>
+						<li>Set clear performance goals and checkpoints</li>
+						<li>Assign mentors for the first 90 days</li>
+					</ul>
+				`
+			},
+
+			'customer-retention-strategies': {
+				title: 'Customer Retention Strategies',
+				category: 'Analytics',
+				content: `
+					<p>Focus on long-term customer value by combining excellent service with proactive retention tactics.</p>
+					<ul>
+						<li>Use follow-ups and loyalty programs to re-engage customers</li>
+						<li>Analyze churn signals and act early</li>
+						<li>Personalize communications based on behavior</li>
+						<li>Measure retention via cohort analysis</li>
+					</ul>
+				`
+			},
+
+			'security-incident-response': {
+				title: 'Security Incident Response for Support Teams',
+				category: 'System',
+				content: `
+					<p>Prepare support teams to recognize and respond to security incidents while preserving evidence.</p>
+					<ul>
+						<li>Establish an incident response runbook</li>
+						<li>Train staff on data handling and escalation paths</li>
+						<li>Coordinate with security and legal teams</li>
+						<li>Preserve logs and timestamps for investigation</li>
+					</ul>
+				`
+			}
+		};
+
+		// Initialize the knowledge base
+		document.addEventListener('DOMContentLoaded', function() {
+			renderAllArticles();
+			initializeNavigation();
+			initializeSearch();
+			initializeArticleCards();
+			initializeModal();
+			initializeAddArticleModal();
+			filterArticles('all');
+		});
+
+		// Search functionality
+		function initializeSearch() {
+			const searchInput = document.getElementById('kbSearchInput');
+			
+			searchInput.addEventListener('input', function() {
+				filterArticles();
+			});
+		}
+
+		function initializeNavigation() {
+			const navItems = document.querySelectorAll('.kb-nav-item');
+			if (!navItems.length) return;
+
+			navItems.forEach(item => {
+				item.addEventListener('click', function(e) {
+					e.preventDefault();
+					navItems.forEach(nav => nav.classList.remove('active'));
+					this.classList.add('active');
+					filterArticles(this.dataset.category);
+				});
+			});
+		}
+
+		// Render all articles in the All Articles section
+		function renderAllArticles() {
+			const allArticlesContainer = document.getElementById('allArticles');
+			allArticlesContainer.innerHTML = '';
+
+			Object.entries(articles).forEach(([articleId, article]) => {
+				const card = document.createElement('div');
+				card.className = 'article-card';
+				card.dataset.article = articleId;
+				card.dataset.category = article.category.toLowerCase().replace(/\s+/g, '-');
+				card.innerHTML = `
+					<div class="article-icon">
+						<i class="fas fa-file-alt"></i>
+					</div>
+					<h3 class="article-title">${article.title}</h3>
+					<p class="article-description">${article.content.replace(/<[^>]+>/g, '').slice(0, 120)}...</p>
+					<div class="article-meta">
+						<span class="article-category">${article.category}</span>
+						<span class="article-views"><i class="fas fa-eye"></i> 124 views</span>
+					</div>
+				`;
+				allArticlesContainer.appendChild(card);
+			});
+		}
+
+		// Article cards functionality
+		function initializeArticleCards() {
+			const articleCards = document.querySelectorAll('.article-card');
+			
+			articleCards.forEach(card => {
+				card.removeEventListener('click', card._openListener);
+				const openListener = function() {
+					const articleId = this.dataset.article;
+					openArticleModal(articleId);
+				};
+				card._openListener = openListener;
+				card.addEventListener('click', openListener);
+			});
+		}
+
+		// Modal functionality
+		function initializeModal() {
+			const modal = document.getElementById('articleModal');
+			const closeBtn = document.getElementById('modalClose');
+			const helpfulBtn = document.getElementById('helpfulBtn');
+			const shareBtn = document.getElementById('shareBtn');
+			const printBtn = document.getElementById('printBtn');
+			
+			closeBtn.addEventListener('click', () => {
+				modal.classList.remove('active');
+			});
+			
+			modal.addEventListener('click', (e) => {
+				if (e.target === modal) {
+					modal.classList.remove('active');
+				}
+			});
+			
+			helpfulBtn.addEventListener('click', () => {
+				alert('Thank you for your feedback! This helps us improve our knowledge base.');
+			});
+			
+			shareBtn.addEventListener('click', () => {
+				const title = document.getElementById('modalTitle').textContent;
+				const url = window.location.href;
+				
+				if (navigator.share) {
+					navigator.share({
+						title: title,
+						text: `Check out this article: ${title}`,
+						url: url
+					});
+				} else {
+					navigator.clipboard.writeText(`${title} - ${url}`);
+					alert('Article link copied to clipboard!');
+				}
+			});
+			
+			printBtn.addEventListener('click', () => {
+				window.print();
+			});
+		}
+
+		function initializeAddArticleModal() {
+			const addBtn = document.getElementById('addArticleBtn');
+			const modal = document.getElementById('addArticleModal');
+			const closeBtn = document.getElementById('addArticleModalClose');
+			const cancelBtn = document.getElementById('cancelAddArticle');
+			const form = document.getElementById('addArticleForm');
+			const editor = document.getElementById('articleContent');
+			const toolbarButtons = document.querySelectorAll('.toolbar-btn');
+
+			if (!addBtn || !modal || !closeBtn || !cancelBtn || !form || !editor) return;
+
+			addBtn.addEventListener('click', () => {
+				modal.classList.add('active');
+				editor.focus();
+			});
+
+			const closeModal = () => {
+				modal.classList.remove('active');
+				form.reset();
+				editor.innerHTML = '';
+			};
+
+			closeBtn.addEventListener('click', closeModal);
+			cancelBtn.addEventListener('click', closeModal);
+			modal.addEventListener('click', (e) => {
+				if (e.target === modal) closeModal();
+			});
+
+			toolbarButtons.forEach(button => {
+				button.addEventListener('click', () => {
+					const command = button.dataset.command;
+					if (!command) return;
+					if (command === 'createLink') {
+						const url = prompt('Enter a URL');
+						if (url) document.execCommand(command, false, url);
+					} else {
+						document.execCommand(command, false, null);
+					}
+				});
+			});
+
+			form.addEventListener('submit', (event) => {
+				event.preventDefault();
+
+				const title = document.getElementById('articleTitle').value.trim();
+				const category = document.getElementById('articleCategory').value;
+				const content = editor.innerHTML.trim();
+				const tags = document.getElementById('articleTags').value.trim();
+
+				if (!title || !category || !content) {
+					alert('Please provide a title, category, and article content.');
+					return;
+				}
+
+				const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+				let articleId = slug || `article-${Date.now()}`;
+				if (articles[articleId]) {
+					articleId = `${articleId}-${Date.now()}`;
+				}
+
+				articles[articleId] = {
+					title,
+					category: category.replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase()),
+					content,
+					tags: tags ? tags.split(',').map(tag => tag.trim()).filter(Boolean) : []
+				};
+
+				renderAllArticles();
+				filterArticles('all');
+				initializeArticleCards();
+				closeModal();
+				alert('Article added successfully.');
+			});
+		}
+
+		// Open article modal
+		function openArticleModal(articleId) {
+			const article = articles[articleId];
+			if (!article) return;
+			
+			document.getElementById('modalTitle').textContent = article.title;
+			document.getElementById('modalContent').innerHTML = article.content;
+			document.getElementById('articleModal').classList.add('active');
+		}
+
+		// Filter articles by category
+		function filterArticles(category) {
+			const articleCards = document.querySelectorAll('.article-card');
+			const query = document.getElementById('kbSearchInput').value.toLowerCase().trim();
+			const selectedCategory = category || document.querySelector('.kb-nav-item.active').dataset.category;
+			let visibleCount = 0;
+			
+			articleCards.forEach(card => {
+				const title = card.querySelector('.article-title').textContent.toLowerCase();
+				const description = card.querySelector('.article-description').textContent.toLowerCase();
+				const categoryText = card.querySelector('.article-category').textContent.toLowerCase();
+				const matchesQuery = !query || title.includes(query) || description.includes(query) || categoryText.includes(query);
+				const matchesCategory = selectedCategory === 'all' || card.dataset.category === selectedCategory;
+				
+				if (matchesQuery && matchesCategory) {
+					card.style.display = 'block';
+					visibleCount++;
+				} else {
+					card.style.display = 'none';
+				}
+			});
+			
+			const noResults = document.getElementById('noResults');
+			noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+			
+			initializeArticleCards();
+		}
+	</script>
+
+<!-- SIDEBAR: highlight active link and user check -->
+<script>
+// Highlight the active sidebar link
+document.addEventListener('DOMContentLoaded', ()=>{
+	const sidebarLinks = document.querySelectorAll('.sidebar .menu a');
+	const currentPath = window.location.pathname.split('/').pop();
+	sidebarLinks.forEach(link => {
+			link.classList.remove('active');
+			if (link.getAttribute('href') === './' + currentPath || link.getAttribute('href') === './' + (currentPath || 'dashboard.html') || link.getAttribute('href') === currentPath) {
+					link.classList.add('active');
+			}
+	});
+});
+</script>
+
+<script>
+// Load staff name and enforce login (same as other pages)
+fetch("/api/user")
+	.then(res => {
+		if (res.status === 401) {
+			window.location.href = "/login.html";
+			return;
+		}
+		return res.json();
+	})
+	.then(data => {
+		if (data) {
+			const el = document.getElementById("profileName");
+			if (el) el.textContent = data.role || data.name || 'Staff';
+		}
+	})
+	.catch(err => console.log("User fetch error", err));
+</script>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="./js/sidebar.js" defer></script>
+<script src="./js/user.js"></script>
+</body>
+</html>

@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" href="/favicon-icon.svg" type="image/svg+xml">
+  <link rel="shortcut icon" href="/favicon-icon.svg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>document.documentElement.classList.add('ls-js');</script>
+  <script src="./js/user.js"></script>
+  <title>LiveSupport - Settings</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/sidebar.css">
+  <style>
+    body {
+    background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.16), transparent 20%),
+                radial-gradient(circle at bottom right, rgba(168, 85, 247, 0.14), transparent 18%),
+                linear-gradient(180deg, #070b16 0%, #0f1220 48%, #111827 100%);
+    color: #e2e8f0;
+    min-height: 100vh;
+}
+
+.settings-container {
+    display: flex;
+    gap: 24px;
+    padding: 32px 20px 40px;
+    min-height: calc(100vh - 60px);
+    align-items: stretch;
+}
+
+.settings-sidebar {
+    width: 260px;
+    background: rgba(6, 18, 38, 0.88);
+    border: 1px solid rgba(56, 189, 248, 0.16);
+    box-shadow: 0 22px 70px rgba(5, 8, 20, 0.45);
+    border-radius: 32px;
+    padding: 28px 22px;
+    backdrop-filter: blur(18px);
+    position: relative;
+    overflow: hidden;
+}
+
+.settings-sidebar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.16), transparent 22%),
+                radial-gradient(circle at bottom right, rgba(168, 85, 247, 0.12), transparent 18%);
+    pointer-events: none;
+}
+
+.settings-sidebar h3 {
+    margin-bottom: 24px;
+    color: #ffffff;
+    letter-spacing: 0.14em;
+    font-size: 1.05rem;
+    position: relative;
+    z-index: 1;
+}
+
+.settings-sidebar button {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #dbeafe;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 18px;
+    transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
+}
+
+.settings-sidebar button:hover,
+.settings-sidebar button.active {
+    background: rgba(37, 99, 235, 0.16);
+    border-color: rgba(37, 99, 235, 0.48);
+    box-shadow: 0 18px 40px rgba(37, 99, 235, 0.18);
+    color: #ffffff;
+    transform: translateX(4px);
+}
+
+.settings-content {
+    flex: 1;
+    padding: 28px;
+    border-radius: 32px;
+    background: rgba(10, 18, 40, 0.95);
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(18px);
+    position: relative;
+    overflow: hidden;
+}
+
+.settings-content::before {
+    content: '';
+    position: absolute;
+    inset: -40px;
+    background: radial-gradient(circle at top center, rgba(56, 189, 248, 0.08), transparent 24%),
+                linear-gradient(135deg, transparent 0%, rgba(59, 130, 246, 0.04) 45%, transparent 100%);
+    pointer-events: none;
+}
+
+.settings-content h2 {
+    margin-bottom: 24px;
+    font-size: 1.75rem;
+    letter-spacing: 0.05em;
+    color: #eff6ff;
+    text-transform: uppercase;
+}
+
+.settings-section {
+    display: none;
+    position: relative;
+    z-index: 1;
+}
+
+.settings-section.active {
+    display: block;
+}
+
+.settings-content input,
+.settings-content select {
+    width: 100%;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #e2e8f0;
+    font-size: 0.98rem;
+    outline: none;
+    transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease;
+}
+
+.settings-content input::placeholder {
+    color: rgba(226, 232, 240, 0.6);
+}
+
+.settings-content input:focus,
+.settings-content select:focus {
+    border-color: rgba(56, 189, 248, 0.8);
+    box-shadow: 0 0 28px rgba(56, 189, 248, 0.16);
+    transform: translateY(-1px);
+}
+
+.settings-content button {
+    margin-top: 10px;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #4f46e5, #0ea5e9);
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+    box-shadow: 0 18px 40px rgba(14, 165, 233, 0.2);
+}
+
+.settings-content button:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #38bdf8, #60a5fa);
+    box-shadow: 0 22px 50px rgba(56, 189, 248, 0.28);
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #cbd5e1;
+}
+
+.switch-label {
+    margin-left: 0;
+    color: #e2e8f0;
+    font-size: 0.97rem;
+}
+
+.switch {
+    width: 54px;
+    height: 32px;
+}
+
+.slider {
+    background-color: rgba(255,255,255,0.16);
+}
+
+input:checked + .slider {
+    background-color: rgba(59, 130, 246, 0.9);
+}
+
+.slider:before {
+    background-color: #f8fafc;
+}
+
+#successMsg {
+    padding: 14px 18px;
+    border-radius: 18px;
+    background: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.22);
+    color: #ecfccb;
+    font-weight: 600;
+}
+
+.topbar {
+    background: linear-gradient(90deg, rgba(8, 15, 34, 0.96), rgba(11, 18, 40, 0.96));
+    border-bottom: 1px solid rgba(56, 189, 248, 0.14);
+}
+
+.logout-btn {
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.16);
+    background: rgba(255,255,255,0.08);
+    color: #ffffff;
+    transition: background 0.22s ease, transform 0.22s ease;
+}
+
+.logout-btn:hover {
+    background: rgba(56, 189, 248, 0.18);
+    transform: translateY(-1px);
+}
+
+@keyframes pulseAccent {
+    0%, 100% { box-shadow: 0 0 18px rgba(56, 189, 248, 0.18); }
+    50% { box-shadow: 0 0 28px rgba(56, 189, 248, 0.28); }
+}
+
+.settings-sidebar button.active,
+.settings-sidebar button:hover {
+    animation: pulseAccent 2.5s ease-in-out infinite;
+}
+  </style>
+  <style>
+    /* Make the users list scrollable within the admin panel */
+    #adminUsers #usersList {
+      max-height: calc(100vh - 420px);
+      overflow-y: auto;
+      padding-right: 12px; /* avoid content being hidden under scrollbar */
+    }
+
+    /* Improve table layout when scrolling */
+    #adminUsers table { width: 100%; border-collapse: collapse; }
+    #adminUsers table tr td, #adminUsers table tr th { padding: 12px 8px; vertical-align: middle; }
+    
+    /* Sticky header */
+    #adminUsers #usersList table tr:first-child th {
+      position: sticky;
+      top: 0;
+      z-index: 6;
+      background: linear-gradient(180deg, rgba(15,23,42,0.96), rgba(17,24,39,0.96));
+      color: #e6eef9;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      box-shadow: 0 6px 18px rgba(2,6,23,0.45);
+    }
+  </style>
+  <script>
+    // Apply theme from localStorage immediately to prevent flash
+    (function applyThemeImmediately() {
+      const theme = localStorage.getItem('theme') || 'Light';
+      if (theme === 'Dark') {
+        const style = document.createElement('style');
+        style.id = 'dark-mode-theme';
+        style.textContent = `
+          body { background: #1e1e1e !important; color: #ffffff !important; }
+          input, textarea, select { background: #2d2d2d !important; color: #ffffff !important; border-color: #444 !important; }
+          button { background: #0066cc !important; color: #ffffff !important; }
+          .main, .content, .topbar, .sidebar { background: #1e1e1e !important; color: #ffffff !important; }
+          a { color: #66b3ff !important; }
+          h1, h2, h3, h4, h5, h6 { color: #ffffff !important; }
+          label, span { color: #ffffff !important; }
+        `;
+        document.head.appendChild(style);
+      }
+    })();
+  </script>
+
+  <!-- runtime config loader: reads public/config.json and exposes window.BACKEND_URL -->
+  <script>
+    (function(){
+      try {
+        fetch('/config.json').then(r=>r.json()).then(cfg=>{
+          window.BACKEND_URL = (cfg && cfg.BACKEND_URL) ? String(cfg.BACKEND_URL) : '';
+          // normalize empty to empty string
+          if (!window.BACKEND_URL) window.BACKEND_URL = '';
+        }).catch(()=>{ window.BACKEND_URL = ''; });
+      } catch (e) { window.BACKEND_URL = ''; }
+    })();
+  </script>
+  <!-- include admin users JS (protected by server middleware) -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="./js/admin-users.js"></script>
+  <style>
+    .settings-container { display: flex; }
+    .settings-sidebar { width: 220px; background: #2c3e50; color: white; padding: 20px; }
+    .settings-sidebar button {
+      display: block; width: 100%; margin: 10px 0; padding: 10px;
+      background: none; border: none; color: white; text-align: left; cursor: pointer;
+    }
+    .settings-sidebar button:hover { background: #34495e; }
+
+    .settings-content { flex: 1; padding: 20px; }
+    .settings-section { display: none; }
+    .settings-section.active { display: block; }
+
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; }
+    input, select { width: 100%; padding: 8px; }
+
+    /* Toggle Switch Styles */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    .switch-label {
+      margin-left: 10px;
+      vertical-align: top;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="dashboard">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2 class="logo">LiveSupport</h2>
+    <nav class="menu">
+      <a href="./dashboard.html"><svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 3H5c-1.1 0-2 .9-2 2v14l4-4h12c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg><span class="nav-label">Dashboard</span></a>
+                <a href="./tickets.html"><svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 7V4H4v3H2v10h18V7h-0zM6 6h12v2H6V6zm12 10H6v-6h12v6z"/></svg><span class="nav-label">Tickets</span></a>
+                <a href="./staff-performance.html"><svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 9h3v11H5zM10 4h3v16h-3zM15 13h3v7h-3z"/></svg><span class="nav-label">Staff Performance</span></a>
+                <a href="./analytics.html"><svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 17h2V9H3v8zm4 0h2V3H7v14zm4 0h2v-6h-2v6zm4 0h2v-9h-2v9z"/></svg><span class="nav-label">Analytics</span></a>
+                <a href="./knowledge.html"><svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7v6c0 5 4 9 10 9s10-4 10-9V7l-10-5zM12 4.4L18.6 8 12 11.6 5.4 8 12 4.4z"/></svg><span class="nav-label">Knowledge Base</span></a>
+                
+                <a href="./orders.html"><svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2S15.9 22 17 22s2-.9 2-2-.9-2-2-2zM7.16 14l.84-2h7.45l1.24 3H7.16zM7.6 6h10.8l-1.2 3H8.8L7.6 6z"/></svg><span class="nav-label">Orders</span></a>
+                <a href="./tracking.html"><svg class="nav-icon"  viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 100 8 4 4 0 000-8zm0-6c-6.6 0-12 5.4-12 12 0 3.6 1.6 6.8 4.2 9l.8-2.6C4.1 19.1 3 16.6 3 14 3 8.5 7.6 4 13 4s10 4.5 10 10c0 2.6-1.1 5.1-2.9 6.4L21 23c2.6-2.2 4-5.4 4-9 0-6.6-5.4-12-12-12z"/></svg><span class="nav-label">Tracking</span></a>
+                <a href="./instagram.html"><svg class="nav-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 6a5 5 0 100 10 5 5 0 000-10zm4-3a1 1 0 110 2 1 1 0 010-2z"/></svg><span class="nav-label">Instagram</span></a>
+                <a href="./settings.html" class="active"><svg  viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.14 12.94a7.89 7.89 0 000-1.88l2.03-1.58-2-3.46-2.39.96a8.1 8.1 0 00-1.6-.93l-.36-2.5h-4l-.36 2.5c-.57.24-1.1.55-1.6.93L6.8 6.02l-2 3.46L6.83 11a7.89 7.89 0 000 1.88l-2.03 1.58 2 3.46 2.39-.96c.5.38 1.03.69 1.6.93l.36 2.5h4l.36-2.5c.57-.24 1.1-.55 1.6-.93l2.39.96 2-3.46-2.03-1.58zM12 15.5A3.5 3.5 0 1112 8.5a3.5 3.5 0 010 7z"/></svg><span class="nav-label">Settings</span></a>
+    </nav>
+    </nav>
+  </aside>
+
+  <!-- MAIN AREA -->
+  <div class="main">
+    <header class="topbar">
+      <div class="branch">Branch: <strong>Ikeja Branch</strong></div>
+      <div class="top-right">
+        <div class="profile">
+          <button id="profileBtn" class="btn profile-btn" aria-haspopup="true" aria-expanded="false">
+            <div class="profile-status-mini" id="profileStatusMini"><span class="status-dot-mini online"></span></div>
+            <img class="avatar-sm-img" src="" alt="avatar" style="display:none" />
+            <span class="avatar-sm">A</span>
+          </button>
+          <div id="profileDropdown" class="profile-dropdown" aria-hidden="true">
+            <div class="profile-info"><strong id="profileName">Staff</strong></div>
+            <div class="profile-status">
+              <div class="status-header">
+                <span class="status-label">Status</span>
+                <div class="status-indicator" id="statusIndicator">
+                  <span class="status-dot online"></span>
+                  <span class="status-text">Online</span>
+                </div>
+              </div>
+              <div class="status-toggle">
+                <button class="status-btn online active" data-status="online"><span class="status-dot online"></span> Online</button>
+                <button class="status-btn away" data-status="away"><span class="status-dot away"></span> Away</button>
+                <button class="status-btn offline" data-status="offline"><span class="status-dot offline"></span> Offline</button>
+              </div>
+            </div>
+            <div class="profile-session">
+              <div class="session-header">Session Info</div>
+              <div class="session-details">
+                <div class="session-item"><span class="session-icon">🕐</span><span class="session-label">Logged in:</span><span class="session-value" id="loginTime">--:--</span></div>
+                <div class="session-item"><span class="session-icon">⏱️</span><span class="session-label">Duration:</span><span class="session-value" id="sessionDuration">--:--</span></div>
+                <div class="session-item"><span class="session-icon">⚡</span><span class="session-label">Last activity:</span><span class="session-value" id="lastActivity">--:--</span></div>
+              </div>
+            </div>
+            <div class="profile-actions">
+              <a id="profileSettings" class="profile-action" href="settings.html"><span class="profile-icon">⚙️</span> Settings</a>
+              <button id="logoutBtn" class="profile-action"><span class="profile-icon">🚪</span> Logout</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+      <!-- NOTIFICATION BAR (inbox-style) -->
+      <div id="notificationBar" class="notification-bar" style="display: none; background: #ff6b6b; color: white; padding: 10px; text-align: center; position: relative; z-index: 1000;">
+        <span id="notificationText">New message received!</span>
+        <button id="closeNotification" class="close-btn" style="background: none; border: none; color: white; font-size: 20px; position: absolute; right: 10px; top: 5px; cursor: pointer;">&times;</button>
+      </div>
+
+    <div class="settings-container">
+      <div class="settings-sidebar">
+        <h3>Settings</h3>
+        <button onclick="showSection('account')">Account</button>
+        <button onclick="showSection('notifications')">Notifications</button>
+        <button onclick="showSection('chat')">Chat Settings</button>
+        <button onclick="showSection('tickets')">AI Settings</button>
+        <button onclick="showSection('appearance')">Appearance</button>
+        <button id="adminUsersBtn" style="display:none; margin-top:12px; background: #7c3aed;">Admin: User Management</button>
+      </div>
+
+      <div class="settings-content">
+        <!-- SUCCESS MESSAGE -->
+        <div id="successMsg" style="display:none; color: green; margin-bottom: 10px;">
+          Settings saved successfully!
+        </div>
+
+        <!-- ACCOUNT -->
+        <div id="account" class="settings-section active">
+          <h2>Account Settings</h2>
+          <div style="display:flex;gap:18px;align-items:center;margin-bottom:16px">
+            <div id="avatarWrap" style="display:flex;flex-direction:column;align-items:center;gap:8px">
+              <img id="profilePreview" src="" alt="avatar" style="width:84px;height:84px;border-radius:50%;object-fit:cover;display:none;border:2px solid rgba(255,255,255,0.06)" />
+              <div id="initialPreview" style="width:84px;height:84px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.03);color:#60f0c7;font-weight:700;font-size:28px">S</div>
+              <input id="avatarFile" type="file" accept="image/*" style="display:block" />
+              <button id="uploadAvatarBtn" class="btn">Upload Avatar</button>
+            </div>
+            <div style="flex:1">
+              <input type="text" id="displayName" placeholder="Display Name">
+              <input type="email" id="email" placeholder="Email">
+            </div>
+          </div>
+          <input type="password" id="password" placeholder="New Password">
+          <button onclick="saveSettings()">Save Changes</button>
+        </div>
+
+        <!-- NOTIFICATIONS -->
+        <div id="notifications" class="settings-section">
+          <h2>Notification Settings</h2>
+          <div class="form-group">
+            <label class="switch">
+              <input type="checkbox" id="msgAlert">
+              <span class="slider"></span>
+            </label>
+            <span class="switch-label">Message Alerts</span>
+          </div>
+          <div class="form-group">
+            <label class="switch">
+              <input type="checkbox" id="ticketAlert">
+              <span class="slider"></span>
+            </label>
+            <span class="switch-label">Ticket Alerts</span>
+          </div>
+          <div class="form-group">
+            <label class="switch">
+              <input type="checkbox" id="soundAlert">
+              <span class="slider"></span>
+            </label>
+            <span class="switch-label">Sound</span>
+          </div>
+          <button onclick="saveSettings()">Save Changes</button>
+        </div>
+
+        <!-- CHAT -->
+        <div id="chat" class="settings-section">
+          <h2>Chat Settings</h2>
+          <input type="text" id="autoReply" placeholder="Auto Reply">
+          <select id="chatEnabled">
+            <option value="on">On</option>
+            <option value="off">Off</option>
+          </select>
+          <button onclick="saveSettings()">Save Changes</button>
+        </div>
+
+        <!-- TICKETS -->
+        <div id="tickets" class="settings-section">
+          <h2>AI Settings</h2>
+          <div class="form-group">
+            <label for="autopilotMode">Autopilot Mode</label>
+            <select id="autopilotMode">
+              <option value="assist">Assist Mode: AI suggests replies, Human sends</option>
+              <option value="auto">Auto Mode: AI replies automatically, Only escalates risky cases</option>
+              <option value="manual">Manual Mode: AI disabled</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="autoAssign">Auto Assign</label>
+            <select id="autoAssign">
+              <option value="on">On</option>
+              <option value="off">Off</option>
+            </select>
+          </div>
+          <button onclick="saveSettings()">Save Changes</button>
+        </div>
+
+        <!-- APPEARANCE -->
+        <div id="appearance" class="settings-section">
+          <h2>Appearance</h2>
+          
+          <div class="form-group">
+            <label for="theme">Theme</label>
+            <select id="theme">
+              <option>Light</option>
+              <option>Dark</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="sidebarPosition">Sidebar Position</label>
+            <select id="sidebarPosition" onchange="applySidebarSettings()">
+              <option value="left">Left</option>
+              <option value="right">Right</option>
+              <option value="collapsed">Collapsed</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="sidebarWidth">Sidebar Width</label>
+            <select id="sidebarWidth" onchange="applySidebarSettings()">
+              <option value="narrow">Narrow (160px)</option>
+              <option value="standard">Standard (220px)</option>
+              <option value="wide">Wide (280px)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="fontSizeRange">Font Size</label>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <input type="range" id="fontSizeRange" min="90" max="120" step="10" value="100" oninput="applyFontSize(this.value)">
+              <span id="fontSizeLabel" style="min-width:120px; text-align:right; color:#cbd5e1;">Normal (100%)</span>
+            </div>
+            <small style="color:#94a3b8; display:block; margin-top:6px;">Compact (90%), Normal (100%), Large (110%), Extra Large (120%)</small>
+          </div>
+
+          <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:16px; margin:16px 0; font-size:13px; color:#cbd5e1;">
+            <strong>Preview:</strong> Sidebar position and width changes apply immediately. Refresh the page or navigate to see full effect.
+          </div>
+
+          <button onclick="saveSettings()">Save Changes</button>
+        </div>
+        <!-- ADMIN USERS -->
+        <div id="adminUsers" class="settings-section">
+          <h2>Admin — User Management</h2>
+          <div style="display:flex; gap:8px; align-items:center; margin-bottom:12px;">
+            <input id="newName" placeholder="Name" style="padding:8px; border-radius:8px; border:1px solid #ddd;" />
+            <input id="newEmail" placeholder="Email" style="padding:8px; border-radius:8px; border:1px solid #ddd;" />
+            <input id="newPass" placeholder="Password" style="padding:8px; border-radius:8px; border:1px solid #ddd;" />
+            <select id="newRole" style="padding:8px; border-radius:8px; border:1px solid #ddd;"><option value="agent">agent</option><option value="admin">admin</option><option value="viewer">viewer</option><option value="Delivery Support">Delivery Support</option><option value="Refund Manager">Refund Manager</option><option value="Kitchen Supervisor">Kitchen Supervisor</option><option value="Customer Support">Customer Support</option></select>
+            <button id="createBtn" style="padding:8px 12px; border-radius:8px; background:#2563eb; color:#fff; border:none;">Create</button>
+            <div id="createMsg" style="margin-left:8px; color:#065f46; font-weight:600; display:none;"></div>
+          </div>
+          <div id="usersList">Loading users...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Switch sections
+  function showSection(id) {
+    document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    // If admin users section shown, fetch users (function provided by admin-users.js)
+    try { if (id === 'adminUsers' && typeof fetchUsers === 'function') fetchUsers(); } catch (e) {}
+  }
+
+  // Apply theme with full color inversion
+  function applyTheme(theme) {
+    if (theme === 'Dark') {
+      document.body.style.background = '#1e1e1e';
+      document.body.style.color = '#ffffff';
+      
+      // Apply dark mode specific styles
+      document.documentElement.style.colorScheme = 'dark';
+      const style = document.createElement('style');
+      style.id = 'dark-mode-theme';
+      style.textContent = `
+        body { background: #1e1e1e !important; color: #ffffff !important; }
+        .main, .content, .topbar, .sidebar, .settings-container, .settings-sidebar, .settings-content { background: #1e1e1e !important; color: #ffffff !important; }
+        input, textarea, select { background: #2d2d2d !important; color: #ffffff !important; border-color: #444 !important; }
+        button { background: #0066cc !important; color: #ffffff !important; }
+        a { color: #66b3ff !important; }
+        h1, h2, h3, h4, h5, h6 { color: #ffffff !important; }
+        label { color: #ffffff !important; }
+      `;
+      if (!document.getElementById('dark-mode-theme')) {
+        document.head.appendChild(style);
+      }
+    } else {
+      document.body.style.background = '#ffffff';
+      document.body.style.color = '#000000';
+      document.documentElement.style.colorScheme = 'light';
+      
+      const darkStyle = document.getElementById('dark-mode-theme');
+      if (darkStyle) darkStyle.remove();
+      
+      // Remove invert filter
+      const elements = document.querySelectorAll('*');
+      elements.forEach(el => {
+        if (el.style.filter === 'invert(1)') {
+          el.style.filter = '';
+        }
+      });
+    }
+  }
+
+  // Apply notification settings
+  function applyNotificationSettings(settings) {
+    // Store settings in localStorage for client-side effects
+    localStorage.setItem('msgAlert', settings.msgAlert);
+    localStorage.setItem('ticketAlert', settings.ticketAlert);
+    localStorage.setItem('soundAlert', settings.soundAlert);
+
+    // Request notification permission if any alert is enabled
+    if (settings.msgAlert || settings.ticketAlert) {
+      if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+      }
+    }
+
+    // Log the applied settings
+    console.log('Notification settings applied:', settings);
+  }
+
+  // Load theme and user settings
+  async function loadSettings() {
+    // Theme from localStorage
+    const savedTheme = localStorage.getItem('theme') || 'Light';
+    applyTheme(savedTheme);
+    const themeSelect = document.getElementById('theme');
+    if (themeSelect) themeSelect.value = savedTheme;
+
+    // Load from server
+    try {
+      const res = await fetch('/api/settings');
+      const data = await res.json();
+
+      document.getElementById('displayName').value = data.displayName || '';
+      document.getElementById('email').value = data.email || '';
+      document.getElementById('autoReply').value = data.autoReply || '';
+      document.getElementById('chatEnabled').value = data.chatEnabled || 'on';
+      document.getElementById('msgAlert').checked = data.msgAlert || false;
+      document.getElementById('ticketAlert').checked = data.ticketAlert || false;
+      document.getElementById('soundAlert').checked = data.soundAlert || false;
+      document.getElementById('autoAssign').value = data.autoAssign || 'on';
+      document.getElementById('autopilotMode').value = data.autopilotMode || 'assist';
+
+      // Apply notification settings on load
+      applyNotificationSettings({
+        msgAlert: data.msgAlert || false,
+        ticketAlert: data.ticketAlert || false,
+        soundAlert: data.soundAlert || false
+      });
+
+      // avatar preview
+      try{
+        const preview = document.getElementById('profilePreview');
+        const initial = document.getElementById('initialPreview');
+        const avatarFile = document.getElementById('avatarFile');
+        if(data && (data.avatar_url || data.image_url)){
+          const url = data.avatar_url || data.image_url;
+          if(preview){ preview.src = url; preview.style.display = ''; }
+          if(initial) initial.style.display = 'none';
+        } else {
+          if(preview) preview.style.display = 'none';
+          if(initial) initial.textContent = (data && data.displayName ? data.displayName.charAt(0).toUpperCase() : 'S');
+        }
+
+        if(avatarFile){
+          const uploadBtn = document.getElementById('uploadAvatarBtn');
+          avatarFile.addEventListener('change', ()=>{
+            const f = avatarFile.files && avatarFile.files[0];
+            if(!f) return;
+            const reader = new FileReader();
+            reader.onload = function(e){
+              if(preview){ preview.src = e.target.result; preview.style.display = ''; }
+              if(initial) initial.style.display = 'none';
+            };
+            reader.readAsDataURL(f);
+          });
+          if(uploadBtn){
+            uploadBtn.addEventListener('click', async ()=>{
+              const f = avatarFile.files && avatarFile.files[0];
+              if(!f){ alert('Select an image first'); return; }
+              const fd = new FormData(); fd.append('avatar', f);
+              try{
+                const r = await fetch('/api/settings/avatar', { method: 'POST', body: fd });
+                if(!r.ok) throw new Error('Upload failed');
+                const json = await r.json();
+                if(json && json.url){
+                  const preview = document.getElementById('profilePreview');
+                  if(preview){ preview.src = json.url; preview.style.display = ''; }
+                  alert('Avatar uploaded');
+                }
+              }catch(e){ console.error('Avatar upload error', e); alert('Upload failed'); }
+            });
+          }
+        }
+      }catch(e){console.error('avatar preview wiring error', e)}
+
+    } catch (err) {
+      console.error("Error loading settings:", err);
+    }
+  }
+
+  // Save settings
+  async function saveSettings() {
+    const settings = {
+      displayName: document.getElementById('displayName').value,
+      email: document.getElementById('email').value,
+      password: document.getElementById('password').value,
+      autoReply: document.getElementById('autoReply').value,
+      chatEnabled: document.getElementById('chatEnabled').value,
+      msgAlert: document.getElementById('msgAlert').checked,
+      ticketAlert: document.getElementById('ticketAlert').checked,
+      soundAlert: document.getElementById('soundAlert').checked,
+      autopilotMode: document.getElementById('autopilotMode').value,
+      autoAssign: document.getElementById('autoAssign').value,
+      theme: document.getElementById('theme').value,
+      fontSize: document.getElementById('fontSizeRange')?.value || '100'
+    };
+
+    // Save theme to localStorage
+    localStorage.setItem('theme', settings.theme);
+    applyTheme(settings.theme);
+
+    // Save font size so it persists globally
+    localStorage.setItem('fontSize', settings.fontSize);
+    applyFontSize(settings.fontSize);
+
+    try {
+      await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settings)
+      });
+
+      // Apply notification settings effects
+      applyNotificationSettings(settings);
+
+      const msg = document.getElementById('successMsg');
+      msg.style.display = 'block';
+      setTimeout(() => { msg.style.display = 'none'; }, 3000);
+    } catch (err) {
+      console.error("Error saving settings:", err);
+    }
+  }
+
+  // Highlight sidebar
+  const sidebarLinks = document.querySelectorAll('.sidebar .menu a');
+  const currentPath = window.location.pathname.split("/").pop();
+  sidebarLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === currentPath || (currentPath === '' && link.getAttribute('href') === 'dashboard.html')) {
+      link.classList.add('active');
+    }
+  });
+
+  // Load staff name and account settings
+  fetch("/api/user")
+    .then(res => res.json())
+    .then(data => {
+      // show the user-friendly display name from settings, fallback to role or name
+      const name = data.displayName || data.name || data.role || 'Staff';
+      const sn = document.getElementById("staffName"); if (sn) sn.textContent = name;
+      // Show admin link only for admins
+      try {
+        if (data && data.role === 'admin') {
+          const btn = document.getElementById('adminUsersBtn');
+          if (btn) {
+            btn.style.display = 'block';
+            btn.addEventListener('click', () => { showSection('adminUsers'); });
+          }
+          const usersBtn = document.getElementById('usersBtn'); if (usersBtn) usersBtn.style.display='inline-block';
+        }
+      } catch (e) { console.error('admin button wiring error', e); }
+    })
+    .catch(err => console.log("User fetch error", err));
+
+  // Populate settings on page load
+  window.addEventListener('DOMContentLoaded', loadSettings);
+</script>
+<script src="./js/settings.js" defer></script>
+<script src="./js/sidebar.js" defer></script>
+</body>
+</html>

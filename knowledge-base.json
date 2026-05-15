@@ -1,0 +1,114 @@
+[
+  {
+    "id": "ticket-handling",
+    "title": "How to Handle Tickets Effectively",
+    "category": "Ticket Management",
+    "keywords": ["ticket", "support", "handle", "manage", "customer service", "resolution", "escalation"],
+    "content": "Effective ticket handling is crucial for maintaining high customer satisfaction and operational efficiency. This comprehensive guide covers the entire ticket lifecycle from creation to resolution.\n\nTicket Creation Process\nWhen a customer submits a ticket, ensure all necessary information is captured:\n- Customer contact information\n- Detailed description of the issue\n- Priority level assessment\n- Relevant attachments or screenshots\n\nInitial Assessment\nWithin the first hour of ticket creation:\n- Acknowledge receipt to the customer\n- Assess urgency and priority\n- Assign to appropriate agent or team\n- Set realistic response time expectations\n\nInvestigation and Resolution\nFollow these steps for systematic problem-solving:\n1. Gather all relevant information\n2. Reproduce the issue if possible\n3. Consult knowledge base and previous solutions\n4. Implement and test the solution\n5. Document the resolution process\n\nCommunication Best Practices\nMaintain clear, professional communication throughout:\n- Provide regular status updates\n- Use clear, jargon-free language\n- Be honest about timelines and expectations\n- Follow up after resolution"
+  },
+  {
+    "id": "communication-skills",
+    "title": "Communication Skills for Support Agents",
+    "category": "Communication",
+    "keywords": ["communication", "talk", "speak", "listen", "empathy", "customer service", "professional"],
+    "content": "Effective communication is the foundation of excellent customer support. This guide explores the key communication skills that every support agent should master.\n\nActive Listening\nActive listening involves fully concentrating on the customer's message:\n- Give your full attention\n- Avoid interrupting\n- Ask clarifying questions\n- Paraphrase to confirm understanding\n\nEmpathy and Emotional Intelligence\nUnderstanding and relating to customer emotions:\n- Acknowledge feelings\n- Show genuine concern\n- Avoid dismissive responses\n- Use empathetic language\n\nClear and Concise Communication\nExpress ideas clearly and efficiently:\n- Use simple language\n- Structure responses logically\n- Avoid technical jargon\n- Be direct but polite\n\nWritten Communication Excellence\nBest practices for written responses:\n- Use proper grammar and spelling\n- Maintain professional tone\n- Structure emails clearly\n- Proofread before sending"
+  },
+  {
+    "id": "escalation-process",
+    "title": "Escalation Process in Customer Support",
+    "category": "Escalation",
+    "keywords": ["escalate", "escalation", "manager", "supervisor", "higher", "level", "complex", "problem"],
+    "content": "Knowing when and how to escalate issues is crucial for maintaining service quality and customer satisfaction. This guide outlines the escalation procedures and best practices.\n\nWhen to Escalate\nEscalation should occur when:\n- The issue exceeds your expertise level\n- Resolution requires higher authority\n- Customer satisfaction is at risk\n- Issue involves system-wide problems\n- Legal or compliance concerns arise\n\nEscalation Levels\nUnderstanding the escalation hierarchy:\n1. Level 1: Front-line support agents\n2. Level 2: Specialized technical support\n3. Level 3: Senior technicians or developers\n4. Level 4: Management or executive team\n\nEscalation Procedure\nFollow these steps for proper escalation:\n1. Document all troubleshooting steps taken\n2. Gather all relevant information and logs\n3. Inform the customer of the escalation\n4. Transfer to appropriate team with context\n5. Follow up on escalated tickets\n\nCommunication During Escalation\nMaintain transparency with customers:\n- Explain why escalation is necessary\n- Provide expected timelines\n- Offer alternative contact methods if needed\n- Keep customers updated on progress"
+  },
+  {
+    "id": "menu-information",
+    "title": "Our Menu and Ordering Information",
+    "category": "Menu",
+    "keywords": ["menu", "food", "pizza", "burger", "order", "price", "cost", "available", "small", "medium", "large", "classic", "cheese", "double"],
+    "content": "Welcome to our food delivery service! Here's our complete menu with pricing and availability information.\n\nPizza Options:\n- Small Pizza: $10 (12 available)\n- Medium Pizza: $15 (8 available)\n- Large Pizza: $20 (4 available)\n\nBurger Options:\n- Classic Burger: $8 (10 available)\n- Cheese Burger: $9 (6 available)\n- Double Burger: $12 (3 available)\n\nOrdering Process:\n1. Browse our menu and select your items\n2. Provide your delivery address and contact information\n3. Confirm your order details and total\n4. Our team will prepare and deliver your food promptly\n\nPayment:\n- All major credit cards accepted\n- Cash on delivery available\n- Secure online payment processing\n\nDelivery:\n- Free delivery on orders over $25\n- Delivery fee of $3.99 for orders under $25\n- Estimated delivery time: 30-45 minutes\n- Real-time order tracking available\n\nSpecial Instructions:\n- Please let us know about any allergies or dietary restrictions\n- Custom modifications available upon request\n- Contact us for catering or large orders"
+  },
+  {
+    "id": "delivery-information",
+    "title": "Delivery Information and Policies",
+    "category": "Delivery",
+    "keywords": ["delivery", "deliver", "time", "when", "arrive", "area", "zone", "fee", "free", "charge", "driver", "tip", "weather", "delay"],
+    "content": "Everything you need to know about our delivery service.\n\nDelivery Areas:\n- We deliver within a 15-mile radius of our restaurant\n- Delivery availability can be checked by entering your address\n- Some remote areas may have additional delivery fees\n\nDelivery Times:\n- Average delivery time: 30-45 minutes\n- Peak hours (6-8 PM): 45-60 minutes\n- Real-time tracking available for all orders\n- Estimated delivery times provided at checkout\n\nDelivery Fees:\n- Free delivery on orders $25 or more\n- $3.99 delivery fee for orders under $25\n- Additional $2.99 fee for deliveries over 10 miles\n- No delivery fee for pickup orders\n\nDelivery Instructions:\n- Provide specific delivery instructions at checkout\n- Include landmarks, gate codes, or apartment numbers\n- Specify preferred delivery location (front door, side entrance, etc.)\n- Contactless delivery available upon request\n\nWeather-Related Delays:\n- Delivery times may be extended during severe weather\n- We monitor weather conditions and adjust estimates accordingly\n- Contact us for updates during weather events\n\nDelivery Driver Tips:\n- 100% of delivery fee goes to drivers\n- Drivers carry less than $20 in change\n- Digital receipts available via app or email"
+  },
+  {
+    "id": "payment-methods",
+    "title": "Payment Methods and Billing",
+    "category": "Payment",
+    "keywords": ["payment", "pay", "card", "credit", "debit", "cash", "bill", "charge", "refund", "receipt", "statement", "decline", "failed"],
+    "content": "Secure and convenient payment options for your orders.\n\nAccepted Payment Methods:\n- Credit Cards: Visa, MasterCard, American Express, Discover\n- Debit Cards: All major networks\n- Digital Wallets: Apple Pay, Google Pay, PayPal\n- Cash on Delivery (additional $2 fee may apply)\n- Gift Cards and Promotional Codes\n\nPayment Security:\n- SSL encryption for all online transactions\n- PCI DSS compliant payment processing\n- No credit card information stored on our servers\n- Secure tokenization technology used\n\nBilling Issues:\n- Charges appear as 'FoodDelivery Co' on statements\n- Multiple charges may appear for split payments\n- Contact bank within 60 days for disputed charges\n- Refunds processed within 3-5 business days\n\nFailed Payments:\n- Check card details and expiration date\n- Ensure sufficient funds for debit cards\n- Contact bank if card is declined without reason\n- Alternative payment methods available\n\nReceipts and Records:\n- Digital receipts sent via email and SMS\n- Order history available in account dashboard\n- Tax receipts available for business expenses\n- Monthly statements for frequent customers"
+  },
+  {
+    "id": "order-tracking",
+    "title": "Order Tracking and Status Updates",
+    "keywords": ["track", "tracking", "status", "where", "update", "progress", "location", "driver", "gps", "sms", "notification"],
+    "category": "Orders",
+    "content": "Track your order from preparation to delivery.\n\nOrder Statuses:\n- Order Received: Order confirmed and payment processed\n- Preparing: Food being prepared by our kitchen team\n- Ready for Delivery: Order packaged and awaiting pickup\n- Out for Delivery: Driver en route to your location\n- Delivered: Order successfully delivered\n\nTracking Methods:\n- Real-time GPS tracking via app or website\n- SMS updates at key milestones\n- Email notifications for status changes\n- Phone support for urgent inquiries\n\nEstimated Times:\n- Order confirmation: Immediate\n- Preparation: 10-15 minutes\n- Delivery: 15-30 minutes from pickup\n- Total time: 30-45 minutes average\n\nDelays and Issues:\n- Traffic delays: Automatic time extensions\n- Weather delays: Updates provided via tracking\n- Order modifications: May extend preparation time\n- Contact us immediately if order is overdue\n\nDriver Communication:\n- Call driver directly using tracking app\n- Text driver for delivery instructions\n- Rate driver experience after delivery\n- Report issues directly through the app"
+  },
+  {
+    "id": "refunds-cancellations",
+    "title": "Refunds, Cancellations, and Returns",
+    "category": "Policies",
+    "keywords": ["refund", "cancel", "cancellation", "return", "money back", "dispute", "complaint", "wrong", "missing", "quality"],
+    "content": "Our policies for order changes and refunds.\n\nCancellation Policy:\n- Cancel within 2 minutes of order placement: Full refund\n- Cancel after preparation begins: No refund for food costs\n- Cancel after driver assigned: $5 cancellation fee\n- Emergency cancellations: Case-by-case basis\n\nRefund Eligibility:\n- Wrong or missing items: Full refund for affected items\n- Cold or unsatisfactory food: Partial or full refund\n- Delivery delays over 30 minutes: 20% discount or refund\n- Allergen contamination: Full refund and replacement\n\nRefund Process:\n- Contact support within 24 hours of delivery\n- Provide order number and detailed description\n- Photos of food/delivery helpful for processing\n- Refunds processed within 3-5 business days\n\nReplacement Orders:\n- Free replacement for wrong orders\n- 50% discount on replacement for quality issues\n- Priority delivery for replacement orders\n- No additional delivery fees for replacements\n\nDispute Resolution:\n- Initial review within 24 hours\n- Manager review for escalated disputes\n- Final resolution within 5 business days\n- Credit issued for future orders when appropriate"
+  },
+  {
+    "id": "food-quality-safety",
+    "title": "Food Quality and Safety Standards",
+    "category": "Quality",
+    "keywords": ["quality", "fresh", "safe", "safety", "allergen", "allergy", "freshness", "temperature", "haccp", "ingredients"],
+    "content": "Our commitment to food quality and safety.\n\nQuality Standards:\n- Fresh ingredients sourced daily\n- HACCP certified preparation processes\n- Temperature-controlled storage and transport\n- Regular quality inspections and audits\n\nFood Safety Protocols:\n- Hand washing and sanitation procedures\n- Cross-contamination prevention\n- Allergen management and labeling\n- Safe cooking temperatures maintained\n\nIngredient Information:\n- Allergen declarations available\n- Ingredient lists provided upon request\n- Nutritional information available\n- Country of origin labeling where required\n\nQuality Complaints:\n- Report issues immediately upon receipt\n- Photos and detailed descriptions required\n- Investigation within 24 hours\n- Corrective actions implemented promptly\n\nFreshness Guarantee:\n- Pizzas prepared fresh for each order\n- Burgers cooked to order\n- Limited holding times to ensure quality\n- Quality checks before every delivery"
+  },
+  {
+    "id": "account-management",
+    "title": "Account Management and Preferences",
+    "keywords": ["account", "profile", "login", "password", "address", "payment method", "history", "order history", "preferences", "settings"],
+    "category": "Account",
+    "content": "Manage your customer account and preferences.\n\nAccount Creation:\n- Sign up with email and phone number\n- Optional profile information\n- Password security requirements\n- Email verification required\n\nProfile Management:\n- Update personal information\n- Manage delivery addresses\n- Save payment methods securely\n- Set dietary preferences and restrictions\n\nOrder History:\n- View past 90 days of orders\n- Reorder favorite items easily\n- Track spending and order frequency\n- Download receipts and invoices\n\nCommunication Preferences:\n- Email notifications for orders\n- SMS updates and promotions\n- Push notifications via app\n- Marketing email opt-in/opt-out\n\nPrivacy and Security:\n- Data encryption and secure storage\n- No sharing of personal information\n- Right to access and delete data\n- Compliance with privacy regulations"
+  },
+  {
+    "id": "promotions-discounts",
+    "title": "Promotions, Discounts, and Loyalty Program",
+    "keywords": ["promotion", "discount", "deal", "coupon", "code", "loyalty", "points", "reward", "special", "offer", "student", "senior", "military"],
+    "category": "Promotions",
+    "content": "Take advantage of our special offers and rewards.\n\nCurrent Promotions:\n- First-time customer: 20% off\n- Student discount: 15% off with valid ID\n- Senior discount: 10% off for customers 65+\n- Military discount: 15% off for active duty\n\nLoyalty Program:\n- Earn 1 point per $1 spent\n- 100 points = $5 reward\n- Double points on birthdays\n- Bonus points for referrals\n\nSeasonal Offers:\n- Weekend specials and happy hour pricing\n- Holiday promotions and bundles\n- Limited-time menu items\n- Flash sales and daily deals\n\nCoupon Codes:\n- Enter codes at checkout for discounts\n- One code per order unless specified\n- Cannot combine with other offers\n- Expiration dates clearly marked\n\nReferral Program:\n- Earn $5 for each successful referral\n- Unlimited referrals possible\n- Automatic credit to account\n- Track referrals in account dashboard"
+  },
+  {
+    "id": "business-hours-contact",
+    "keywords": ["hours", "open", "close", "time", "contact", "phone", "email", "address", "location", "emergency", "support"],
+    "title": "Business Hours and Contact Information",
+    "category": "Contact",
+    "content": "How to reach us and our operating hours.\n\nBusiness Hours:\n- Monday-Thursday: 11:00 AM - 10:00 PM\n- Friday-Saturday: 11:00 AM - 11:00 PM\n- Sunday: 12:00 PM - 9:00 PM\n- Kitchen closes 30 minutes before closing time\n- Delivery available until 30 minutes before closing\n\nContact Methods:\n- Phone: (555) 123-4567\n- Email: support@fooddelivery.com\n- Live Chat: Available during business hours\n- App: In-app messaging and support\n\nEmergency Contact:\n- For urgent delivery issues: Call driver directly\n- Food safety concerns: Contact immediately\n- System outages: Check status page\n- General emergencies: Local authorities\n\nResponse Times:\n- Phone calls: Answered within 3 rings\n- Emails: Response within 24 hours\n- Live chat: Response within 5 minutes\n- App messages: Response within 15 minutes\n\nLocation Information:\n- Main restaurant address provided\n- Multiple pickup locations available\n- Delivery radius clearly defined\n- Parking information for pickup customers"
+  },
+  {
+    "keywords": ["special", "request", "dietary", "allergy", "vegetarian", "vegan", "gluten", "dairy", "modification", "custom", "catering", "party"],
+    "id": "special-requests",
+    "title": "Special Requests and Dietary Accommodations",
+    "category": "Accommodations",
+    "content": "How we handle special requests and dietary needs.\n\nDietary Restrictions:\n- Vegetarian and vegan options clearly marked\n- Gluten-free items available\n- Dairy-free alternatives offered\n- Nut-free preparation areas\n\nAllergen Management:\n- Dedicated preparation for severe allergies\n- Cross-contamination prevention protocols\n- Allergen declarations on all items\n- Staff trained in allergen awareness\n\nCustom Modifications:\n- Extra cheese, sauce, or toppings\n- Light or extra cooking instructions\n- Split orders or half modifications\n- Custom pizza ingredient combinations\n\nSpecial Occasions:\n- Catering services for events\n- Large order discounts\n- Custom menu items for parties\n- Birthday and celebration packages\n\nAccessibility Services:\n- Wheelchair accessible locations\n- Large print menus available\n- Audio descriptions for menu items\n- Assistance for customers with disabilities"
+  },
+  {
+    "keywords": ["problem", "issue", "trouble", "error", "fix", "help", "wrong", "missing", "late", "cold", "app", "login", "payment"],
+    "id": "troubleshooting-common-issues",
+    "title": "Troubleshooting Common Issues",
+    "category": "Support",
+    "content": "Solutions for frequently encountered problems.\n\nApp Issues:\n- Force close and restart the app\n- Clear app cache and data\n- Update to latest app version\n- Check internet connection\n\nOrder Issues:\n- Wrong items: Contact support immediately\n- Missing items: Photos required for refund\n- Late delivery: Automatic compensation applied\n- Cold food: Reheat instructions provided\n\nPayment Problems:\n- Declined card: Check with bank\n- Double charge: Automatic refund within 24 hours\n- Wrong amount: Contact support with order number\n- Gift card issues: Check balance and expiration\n\nDelivery Issues:\n- Driver can't find address: Verify address details\n- Wrong delivery location: Call driver immediately\n- Damaged packaging: Photos for replacement\n- Driver behavior: Report through app\n\nAccount Issues:\n- Can't log in: Reset password\n- Wrong information: Update in profile\n- Missing order history: Contact support\n- Subscription problems: Manage in account settings"
+  },
+  {
+    "keywords": ["terms", "service", "legal", "agreement", "liability", "dispute", "arbitration", "law", "rights", "responsibility"],
+    "id": "terms-of-service",
+    "title": "Terms of Service and Legal Information",
+    "category": "Legal",
+    "content": "Important legal terms and conditions.\n\nService Agreement:\n- Age requirement: 18+ for online orders\n- Geographic restrictions apply\n- Service availability not guaranteed\n- Prices subject to change without notice\n\nOrder Acceptance:\n- Orders subject to availability\n- Right to refuse service reserved\n- Menu items may vary by location\n- Special requests accommodated when possible\n\nPayment Terms:\n- Payment due at time of order\n- Failed payments may cancel order\n- Refunds processed per policy\n- Taxes and fees clearly disclosed\n\nDelivery Terms:\n- Delivery times are estimates only\n- Force majeure events may delay delivery\n- Customer responsible for accurate address\n- Signature may be required for delivery\n\nLiability Limitations:\n- Service provided 'as is'\n- No guarantees on food quality or timing\n- Maximum liability limited to order value\n- Indirect damages not covered\n\nDispute Resolution:\n- Informal resolution attempted first\n- Arbitration for unresolved disputes\n- Applicable law specified\n- Class action waiver included"
+  },
+  {
+    "id": "privacy-policy",
+    "title": "Privacy Policy and Data Protection",
+    "category": "Privacy",
+    "keywords": ["privacy", "data", "personal", "information", "security", "protection", "gdpr", "rights", "access", "delete", "share"],
+    "content": "How we protect and use your personal information.\n\nInformation Collected:\n- Name, address, phone, email\n- Order history and preferences\n- Payment information (securely processed)\n- Device and app usage data\n\nInformation Usage:\n- Process and deliver orders\n- Provide customer support\n- Send marketing communications (with consent)\n- Improve services and develop new features\n\nInformation Sharing:\n- Shared with delivery drivers for order fulfillment\n- Shared with payment processors for transactions\n- Shared with third-party services as needed\n- Not sold to third parties for marketing\n\nData Security:\n- Encryption for data in transit and at rest\n- Secure servers and regular backups\n- Employee access controls\n- Regular security audits\n\nData Retention:\n- Active accounts: Indefinite retention\n- Inactive accounts: 7 years minimum\n- Legal requirements may extend retention\n- Right to deletion upon request\n\nYour Rights:\n- Access your personal data\n- Correct inaccurate information\n- Delete your account and data\n- Opt out of marketing communications\n- Data portability available"
+  }
+]
